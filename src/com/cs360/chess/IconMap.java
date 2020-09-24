@@ -16,7 +16,6 @@ public final class IconMap {
         //3 = bishop
         //4 = king
         //5 = queen
-        
         //TODO load the pieces from resources
     }
 
