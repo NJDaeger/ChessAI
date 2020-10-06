@@ -10,5 +10,13 @@ public class Game {
     
     private Board primaryBoard;
     //todo handle minimax in this class.
+
+    public Game() {
+        primaryBoard = new Board();
+    }
+
+    public Board getCurrentBoard() {
+        return primaryBoard;
+    }
     
 }
