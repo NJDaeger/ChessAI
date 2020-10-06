@@ -8,6 +8,8 @@ public final class Knight extends Piece {
         super(2, isBlack);
     }
     
+    // L L L L L L L L L
+    //can skip
     @Override
     public boolean[][] computePossible(Board board) {
         return new boolean[0][];

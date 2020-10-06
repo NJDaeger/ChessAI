@@ -7,7 +7,8 @@ public final class Bishop extends Piece {
     public Bishop(boolean isBlack) {
         super(3, isBlack);
     }
-
+    
+    //diagonals, no jumping
     @Override
     public boolean[][] computePossible(Board board) {
         return new boolean[0][];

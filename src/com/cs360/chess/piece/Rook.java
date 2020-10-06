@@ -8,6 +8,7 @@ public final class Rook extends Piece {
         super(1, isBlack);
     }
 
+    //forward, backward, left, or right in any direction at any amount as long as there no pieces in the way
     @Override
     public boolean[][] computePossible(Board board) {
         return new boolean[0][];

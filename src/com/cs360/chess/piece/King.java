@@ -8,6 +8,7 @@ public final class King extends Piece {
         super(4, isBlack);
     }
     
+    //all directions, max of 1 space at a time
     @Override
     public boolean[][] computePossible(Board board) {
         return new boolean[0][];
