@@ -8,11 +8,11 @@ import javafx.beans.binding.DoubleBinding;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
-import javafx.scene.control.Label;
 
 public class Menu extends Application {
     
@@ -21,7 +21,6 @@ public class Menu extends Application {
     }
     private Game currentGame;
     GridPane grid = new GridPane();
-    Label test = new Label("X");
     @Override
     public void start(Stage stage) throws Exception {
         currentGame = new Game();
@@ -29,6 +28,7 @@ public class Menu extends Application {
 
         grid.setAlignment(Pos.CENTER);
         grid.setPadding(new Insets(20, 20, 20, 20));
+        Label test = new Label("X");
         for (int column = 0; column < 8; column++) {
             for (int row = 0; row < 8; row++) {
                 Rectangle square = new Rectangle();

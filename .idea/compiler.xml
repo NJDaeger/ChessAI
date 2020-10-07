@@ -10,7 +10,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="ChessAI" target="14" />
+      <module name="ChessAI" target="15" />
       <module name="CS 360" target="1.5" />
     </bytecodeTargetLevel>
   </component>
