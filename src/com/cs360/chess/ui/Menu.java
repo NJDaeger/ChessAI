@@ -32,17 +32,15 @@ public class Menu extends Application {
         for (int column = 0; column < 8; column++) {
             for (int row = 0; row < 8; row++) {
                 Rectangle square = new Rectangle();
-                square.setFill(((column + row) % 2 == 0) ? Color.WHITE : Color.BLACK);
+                square.setFill(((column + row) % 2 == 0) ? Color.TAN : Color.MAROON);
                 DoubleBinding size = (DoubleBinding) Bindings.when(grid.widthProperty().greaterThan(grid.heightProperty())).then(grid.heightProperty().divide(8)).otherwise(grid.widthProperty().divide(8));
                 square.widthProperty().bind(size);
                 square.heightProperty().bind(size);
                 grid.add(square, column, row);
             }
         }
-
-        //grid.add(test,0,0);
-        //Board test = currentGame.getCurrentBoard();
-        //update(test);
+        Board temp = currentGame.getCurrentBoard();
+        update(temp);
         Scene loadingScreen = new Scene(grid, 300, 300);
         stage.setScene(loadingScreen);
         stage.show();
@@ -52,16 +50,18 @@ public class Menu extends Application {
     void update(Board board){
         for(int column=0;column<8;column++){
             for(int row=0;row<8;row++){
-                Label piece = new Label();
+                Label piece = new Label("x");
                 Piece[][] tempBoard = board.getBoard();
-               if(tempBoard[column][row].isBlack()){
-                   piece.setTextFill(Color.BLACK);
-               }
-               else{
-                   piece.setTextFill(Color.WHITE);
-               }
-               piece.setText("X");
-               grid.add(piece,column,row);
+                if(tempBoard[column][row]!=null){
+                    if(tempBoard[column][row].isBlack()){
+                        piece.setTextFill(Color.BLACK);
+                    }
+                    else{
+                        piece.setTextFill(Color.WHITE);
+                    }
+                    grid.add(piece,column,row);
+                }
+
             }
         }
     }
