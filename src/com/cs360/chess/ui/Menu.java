@@ -1,6 +1,7 @@
 package com.cs360.chess.ui;
 
-import com.cs360.chess.Game;
+import com.cs360.chess.*;
+import com.cs360.chess.piece.Piece;
 import javafx.application.Application;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.DoubleBinding;
@@ -11,6 +12,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import javafx.scene.control.Label;
 
 public class Menu extends Application {
     
@@ -18,12 +20,13 @@ public class Menu extends Application {
         launch(args);
     }
     private Game currentGame;
-
+    GridPane grid = new GridPane();
+    Label test = new Label("X");
     @Override
     public void start(Stage stage) throws Exception {
-        this.currentGame = new Game();
+        currentGame = new Game();
         stage.setTitle("Chess AI");
-        GridPane grid = new GridPane();
+
         grid.setAlignment(Pos.CENTER);
         grid.setPadding(new Insets(20, 20, 20, 20));
         for (int column = 0; column < 8; column++) {
@@ -36,9 +39,31 @@ public class Menu extends Application {
                 grid.add(square, column, row);
             }
         }
+
+        //grid.add(test,0,0);
+        //Board test = currentGame.getCurrentBoard();
+        //update(test);
         Scene loadingScreen = new Scene(grid, 300, 300);
         stage.setScene(loadingScreen);
         stage.show();
+    }
+
+    //updates the GUI
+    void update(Board board){
+        for(int column=0;column<8;column++){
+            for(int row=0;row<8;row++){
+                Label piece = new Label();
+                Piece[][] tempBoard = board.getBoard();
+               if(tempBoard[column][row].isBlack()){
+                   piece.setTextFill(Color.BLACK);
+               }
+               else{
+                   piece.setTextFill(Color.WHITE);
+               }
+               piece.setText("X");
+               grid.add(piece,column,row);
+            }
+        }
     }
     
 }

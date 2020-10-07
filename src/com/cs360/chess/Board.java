@@ -82,5 +82,12 @@ public class Board {
         board[x][y] = null;
         return oldPiece;
     }
-    
+
+    /**
+     *
+     * @return The piece array board
+     */
+    public Piece[][] getBoard() {
+        return board;
+    }
 }
