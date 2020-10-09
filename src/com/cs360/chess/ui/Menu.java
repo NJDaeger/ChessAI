@@ -2,6 +2,9 @@ package com.cs360.chess.ui;
 
 import com.cs360.chess.*;
 import com.cs360.chess.piece.Piece;
+import de.codecentric.centerdevice.javafxsvg.SvgImageLoaderFactory;
+import de.codecentric.centerdevice.javafxsvg.dimension.DimensionProvider;
+import de.codecentric.centerdevice.javafxsvg.dimension.PrimitiveDimensionProvider;
 import javafx.application.Application;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.DoubleBinding;
@@ -9,8 +12,12 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
@@ -19,16 +26,23 @@ public class Menu extends Application {
     public static void main(String[] args) {
         launch(args);
     }
+    
+    
     private Game currentGame;
-    GridPane grid = new GridPane();
+    private GridPane grid;
+    
     @Override
     public void start(Stage stage) throws Exception {
+        SvgImageLoaderFactory.install();
+        IconMap.loadIcons();
         currentGame = new Game();
+        grid = new GridPane();
+        
         stage.setTitle("Chess AI");
-
         grid.setAlignment(Pos.CENTER);
         grid.setPadding(new Insets(20, 20, 20, 20));
-        Label test = new Label("X");
+        
+        
         for (int column = 0; column < 8; column++) {
             for (int row = 0; row < 8; row++) {
                 Rectangle square = new Rectangle();
@@ -50,16 +64,12 @@ public class Menu extends Application {
     void update(Board board){
         for(int column=0;column<8;column++){
             for(int row=0;row<8;row++){
-                Label piece = new Label("x");
                 Piece[][] tempBoard = board.getBoard();
                 if(tempBoard[column][row]!=null){
-                    if(tempBoard[column][row].isBlack()){
-                        piece.setTextFill(Color.BLACK);
-                    }
-                    else{
-                        piece.setTextFill(Color.WHITE);
-                    }
-                    grid.add(piece,column,row);
+                    ImageView img = new ImageView(IconMap.getIcon(tempBoard[column][row]));
+                    img.fitWidthProperty().bind(Bindings.when(grid.widthProperty().greaterThan(grid.heightProperty())).then(grid.heightProperty().divide(8)).otherwise(grid.widthProperty().divide(8)));
+                    img.fitHeightProperty().bind(Bindings.when(grid.widthProperty().greaterThan(grid.heightProperty())).then(grid.heightProperty().divide(8)).otherwise(grid.widthProperty().divide(8)));
+                    grid.add(img, column, row);
                 }
 
             }
