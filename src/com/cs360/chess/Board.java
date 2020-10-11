@@ -55,7 +55,7 @@ public class Board {
     
     /**
      * Creates a new board based on a previous board. (DEEP COPY)
-     * @param parent
+     * @param parent The board to base the current board off of.
      */
     public Board(Board parent) {
         this.board = new Piece[8][8];
