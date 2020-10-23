@@ -11,7 +11,10 @@ public final class Knight extends Piece {
     // L L L L L L L L L
     //can skip
     @Override
-    public boolean[][] computePossible(Board board) {
-        return new boolean[0][];
+    public int[][] computePossible(Board board, int column, int row) {
+        int direction = isBlack() ? 1 : -1;
+        int[][] moves;
+
+        return new int[0][];
     }
 }

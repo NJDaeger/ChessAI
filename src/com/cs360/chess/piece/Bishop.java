@@ -10,7 +10,9 @@ public final class Bishop extends Piece {
     
     //diagonals, no jumping
     @Override
-    public boolean[][] computePossible(Board board) {
-        return new boolean[0][];
+    public int[][] computePossible(Board board, int column, int row) {
+        //{{1, 2}, {1, 2}, {1,2}} array of arrays containing 2 ints
+        //for (int column)
+        return new int[0][];
     }
 }

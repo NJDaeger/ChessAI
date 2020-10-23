@@ -4,6 +4,7 @@ import com.cs360.chess.Board;
 
 public abstract class Piece {
 
+    private boolean hasMoved;
     private final int iconId;
     private final boolean isBlack;
     
@@ -11,7 +12,15 @@ public abstract class Piece {
         this.iconId = iconId;
         this.isBlack = isBlack;
     }
-    
+
+    public void setHasMoved(boolean moved) {
+        this.hasMoved = moved;
+    }
+
+    public boolean hasMoved() {
+        return hasMoved;
+    }
+
     public boolean isBlack() {
         return isBlack;
     }
@@ -20,6 +29,6 @@ public abstract class Piece {
         return iconId;
     }
 
-    public abstract boolean[][] computePossible(Board board);
+    public abstract int[][] computePossible(Board board, int column, int row);
 
 }

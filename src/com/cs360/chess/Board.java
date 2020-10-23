@@ -68,19 +68,47 @@ public class Board {
     }
     
     /**
-     * Moves a piece from x,y to newX, newY. Top left is 0, 0, bottom right is 9, 9
-     * @param x The X position of the piece
-     * @param y The Y position of the piece
-     * @param newX The newX position of the piece
-     * @param newY The newY position of the piece
-     * @return The piece which was kicked out of the new spot, or null if there was no piece occupying newX, newY
+     * Moves a piece from column,row to newColumn, newRow. Top left is 0, 0, bottom right is 7, 7
+     * @param column The X position of the piece
+     * @param row The Y position of the piece
+     * @param newColumn The newColumn position of the piece
+     * @param newRow The newRow position of the piece
+     * @return The piece which was kicked out of the new spot, or null if there was no piece occupying newColumn, newRow
      */
-    public Piece movePiece(int x, int y, int newX, int newY) {
-        if (x > 7 || y > 7 || newX > 7 || newY > 7) throw new RuntimeException("Piece out of bounds");
-        Piece oldPiece = board[newX][newY];
-        board[newX][newY] = board[x][y];
-        board[x][y] = null;
+    public Piece movePiece(int column, int row, int newColumn, int newRow) {
+        if (column > 7 || row > 7 || newColumn > 7 || newRow > 7) throw new RuntimeException("Piece out of bounds");
+        Piece oldPiece = board[newColumn][newRow];
+        board[newColumn][newRow] = board[column][row];
+        board[column][row] = null;
         return oldPiece;
+    }
+
+    /**
+     * Get a piece at a specific location on the board.
+     * @param column The column of the piece you want
+     * @param row The row of the piece you want
+     * @return The piece at the given spot, or null if there is no piece in the spot.
+     */
+    public Piece getPieceAt(int column, int row) {
+        return board[column][row];
+    }
+
+    /**
+     * Check if a piece is at a given location on the board
+     * @param column The column of the piece you want to check
+     * @param row The row of the piece you want to check
+     * @return True if a piece was at the given location, false otherwise
+     */
+    public boolean isPieceAt(int column, int row) {
+        return board[column][row] != null;
+    }
+
+    /**
+     * Check if the given column and row is within the bounds of the board
+     * @return True if the location is within the board, false otherwise.
+     */
+    public boolean isInBounds(int column, int row) {
+        return column <= 7 && row <= 7 && column >= 0 && row >= 0;
     }
 
     /**

@@ -10,7 +10,7 @@ public final class Queen extends Piece {
     
     //can move in any (forward, backward, left, right, diagonal) direction at any distance as long as the path is clear
     @Override
-    public boolean[][] computePossible(Board board) {
-        return new boolean[0][];
+    public int[][] computePossible(Board board, int column, int row) {
+        return new int[0][];
     }
 }

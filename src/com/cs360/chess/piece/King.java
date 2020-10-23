@@ -10,7 +10,7 @@ public final class King extends Piece {
     
     //all directions, max of 1 space at a time
     @Override
-    public boolean[][] computePossible(Board board) {
-        return new boolean[0][];
+    public int[][] computePossible(Board board, int column, int row) {
+        return new int[0][];
     }
 }
