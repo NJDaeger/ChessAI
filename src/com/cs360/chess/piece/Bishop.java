@@ -5,7 +5,7 @@ import com.cs360.chess.Board;
 public final class Bishop extends Piece {
 
     public Bishop(boolean isBlack) {
-        super(3, isBlack);
+        super(3, isBlack, 30);
     }
     
     //diagonals, no jumping

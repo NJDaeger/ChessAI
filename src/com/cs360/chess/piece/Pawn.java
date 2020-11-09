@@ -5,7 +5,7 @@ import com.cs360.chess.Board;
 public final class Pawn extends Piece {
 
     public Pawn(boolean isBlack) {
-        super(0, isBlack);
+        super(0, isBlack, 10);
     }
     
     /**
@@ -28,12 +28,12 @@ public final class Pawn extends Piece {
         } else moves[0] = new int[]{-1, -1};
         
         //attack left (diagonal)
-        if (board.isInBounds(column - 1, row + direction) && board.isPieceAt(column - 1, row + direction)) {
+        if (board.isInBounds(column - 1, row + direction) && board.isPieceAt(column - 1, row + direction) && (board.getPieceAt(column - 1, row + direction).isBlack() != isBlack())) {
             moves[1] = new int[]{column - 1, row + direction}; //attack left
         } else moves[1] = new int[]{-1, -1};
         
         //attack right (diagonal)
-        if (board.isInBounds(column + 1, row + direction) && board.isPieceAt(column + 1, row + direction)) {
+        if (board.isInBounds(column + 1, row + direction) && board.isPieceAt(column + 1, row + direction) && (board.getPieceAt(column + 1, row + direction).isBlack() != isBlack())) {
             moves[2] = new int[]{column + 1, row + direction}; //attack right
         } else moves[2] = new int[]{-1, -1};
         

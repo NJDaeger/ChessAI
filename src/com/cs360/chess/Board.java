@@ -118,4 +118,37 @@ public class Board {
     public Piece[][] getBoard() {
         return board;
     }
+
+    /**
+     * Get all the current black pieces on the board
+     * @return An array of all the current black pieces on the board. Null indices indicates there are no more pieces found afterwards.
+     */
+    public Piece[] getBlackPieces() {
+        Piece[] pieces = new Piece[16];
+        int i = 0;
+        for (int column = 0; column < 8; column++) {
+            for (int row = 0; row < 8; row++) {
+                if (i >= 16) break;
+                if (board[column][row] != null && board[column][row].isBlack()) pieces[i++] = board[column][row];
+            }
+        }
+        return pieces;
+    }
+
+    /**
+     * Get all the current white pieces on the board
+     * @return An array of all the current white pieces on the board. Null indices indicates there are no more pieces found afterwards.
+     */
+    public Piece[] getWhitePieces() {
+        Piece[] pieces = new Piece[16];
+        int i = 0;
+        for (int column = 0; column < 8; column++) {
+            for (int row = 0; row < 8; row++) {
+                if (i >= 16) break;
+                if (board[column][row] != null && !board[column][row].isBlack()) pieces[i++] = board[column][row];
+            }
+        }
+        return pieces;
+    }
+
 }

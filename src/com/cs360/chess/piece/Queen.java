@@ -5,7 +5,7 @@ import com.cs360.chess.Board;
 public final class Queen extends Piece {
     
     public Queen(boolean isBlack) {
-        super(5, isBlack);
+        super(5, isBlack, 90);
     }
     
     //can move in any (forward, backward, left, right, diagonal) direction at any distance as long as the path is clear

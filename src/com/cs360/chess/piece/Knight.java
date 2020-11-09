@@ -5,7 +5,7 @@ import com.cs360.chess.Board;
 public final class Knight extends Piece {
     
     public Knight(boolean isBlack) {
-        super(2, isBlack);
+        super(2, isBlack, 30);
     }
     
     // L L L L L L L L L
