@@ -83,13 +83,13 @@ public abstract class Piece {
             }
         }
 
-        int[][] trimmedMoves = new int[2][index];
+        int[][] trimmedMoves = new int[index][2];
         System.arraycopy(moves, 0, trimmedMoves, 0, index);
         return trimmedMoves;
     }
 
     protected static int[][] straightMoves(Board board, int column, int row, Piece piece) {
-        int[][] moves = new int[2][14];
+        int[][] moves = new int[14][2];
         int index = 0;
 
         boolean up = true;
@@ -135,7 +135,7 @@ public abstract class Piece {
                 index++;
             }
         }
-        int[][] trimmedMoves = new int[2][index];
+        int[][] trimmedMoves = new int[index][2];
         System.arraycopy(moves, 0, trimmedMoves, 0, index);
         return trimmedMoves;
 
