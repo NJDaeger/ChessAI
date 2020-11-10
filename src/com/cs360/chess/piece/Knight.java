@@ -2,6 +2,8 @@ package com.cs360.chess.piece;
 
 import com.cs360.chess.Board;
 
+import java.util.Arrays;
+
 public final class Knight extends Piece {
     
     public Knight(boolean isBlack) {
@@ -87,6 +89,7 @@ public final class Knight extends Piece {
         if (board.isInBounds(column - 1, row - 2)) {
             if (!board.isPieceAt(column - 1, row - 2) || board.getPieceAt(column - 1, row - 2).isBlack() != isBlack()) {
                 moves[index] = new int[]{column - 1, row - 2};
+                index++;
             }
         }
 

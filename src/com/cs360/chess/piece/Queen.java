@@ -13,7 +13,7 @@ public final class Queen extends Piece {
     public int[][] computePossible(Board board, int column, int row) {
         int[][] xPattern = diagonalMoves(board, column, row, this);
         int[][] plusPattern = straightMoves(board, column, row, this);
-        int[][] moves = new int[2][xPattern.length + plusPattern.length];
+        int[][] moves = new int[xPattern.length + plusPattern.length][2];
         System.arraycopy(xPattern, 0, moves, 0, xPattern.length);
         System.arraycopy(plusPattern, 0, moves, xPattern.length, plusPattern.length);
         return moves;

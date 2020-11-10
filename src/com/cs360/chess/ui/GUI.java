@@ -23,6 +23,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
+import java.util.Arrays;
+
 public class GUI extends Application {
     
     public static void main(String[] args) {
@@ -162,6 +164,7 @@ public class GUI extends Application {
 
         //for now we will use a temp possible move to do this........
         int[][] posMoves = selected.piece.computePossible(currentGame.getCurrentBoard(), selected.col,selected.row);
+        System.out.println(Arrays.deepToString(posMoves));
 
         for(int[] coord : posMoves){
             Label x = new Label("X");

@@ -2,6 +2,8 @@ package com.cs360.chess.piece;
 
 import com.cs360.chess.Board;
 
+import java.util.Arrays;
+
 public abstract class Piece {
 
     private final int points;
@@ -38,7 +40,7 @@ public abstract class Piece {
     public abstract int[][] computePossible(Board board, int column, int row);
 
     protected static int[][] diagonalMoves(Board board, int column, int row, Piece piece) {
-        int[][] moves = new int[2][13];//The most diagonal moves we can have is 13
+        int[][] moves = new int[13][2];//The most diagonal moves we can have is 13
         int index = 0;
 
         boolean br = true;
@@ -50,36 +52,56 @@ public abstract class Piece {
             if (br && board.isInBounds(column + dx, row + dx)) {
                 if (board.isPieceAt(column + dx, row + dx)) {
                     br = false; //We want to stop going to the bottom right
-                    if (board.getPieceAt(column + dx, row + dx).isBlack() != piece.isBlack()) moves[index] = new int[]{column + dx, row + dx};
-                } else moves[index] = new int[]{column + dx, row + dx};
-                index++;
+                    if (board.getPieceAt(column + dx, row + dx).isBlack() != piece.isBlack()) {
+                        moves[index] = new int[]{column + dx, row + dx};
+                        index++;
+                    }
+                } else {
+                    moves[index] = new int[]{column + dx, row + dx};
+                    index++;
+                }
             }
 
             //Bottom left of piece
             if (bl && board.isInBounds(column - dx, row + dx)) {
                 if (board.isPieceAt(column - dx, row + dx)) {
                     bl = false; //We want to stop going to the bottom right
-                    if (board.getPieceAt(column - dx, row + dx).isBlack() != piece.isBlack()) moves[index] = new int[]{column - dx, row + dx};
-                } else moves[index] = new int[]{column - dx, row + dx};
-                index++;
+                    if (board.getPieceAt(column - dx, row + dx).isBlack() != piece.isBlack()) {
+                        moves[index] = new int[]{column - dx, row + dx};
+                        index++;
+                    }
+                } else {
+                    moves[index] = new int[]{column - dx, row + dx};
+                    index++;
+                }
             }
 
             //Top right of piece
             if (tr && board.isInBounds(column + dx, row - dx)) {
                 if (board.isPieceAt(column + dx, row - dx)) {
                     tr = false; //We want to stop going to the bottom right
-                    if (board.getPieceAt(column + dx, row - dx).isBlack() != piece.isBlack()) moves[index] = new int[]{column + dx, row - dx};
-                } else moves[index] = new int[]{column + dx, row - dx};
-                index++;
+                    if (board.getPieceAt(column + dx, row - dx).isBlack() != piece.isBlack()) {
+                        moves[index] = new int[]{column + dx, row - dx};
+                        index++;
+                    }
+                } else {
+                    moves[index] = new int[]{column + dx, row - dx};
+                    index++;
+                }
             }
 
             //Top left of piece
             if (tl && board.isInBounds(column - dx, row - dx)) {
                 if (board.isPieceAt(column - dx, row - dx)) {
                     tl = false; //We want to stop going to the bottom right
-                    if (board.getPieceAt(column - dx, row - dx).isBlack() != piece.isBlack()) moves[index] = new int[]{column - dx, row - dx};
-                } else moves[index] = new int[]{column - dx, row - dx};
-                index++;
+                    if (board.getPieceAt(column - dx, row - dx).isBlack() != piece.isBlack()) {
+                        moves[index] = new int[]{column - dx, row - dx};
+                        index++;
+                    }
+                } else {
+                    moves[index] = new int[]{column - dx, row - dx};
+                    index++;
+                }
             }
         }
 
@@ -103,40 +125,63 @@ public abstract class Piece {
             if (down && board.isInBounds(column + dx, row)) {
                 if (board.isPieceAt(column + dx, row)) {
                     down = false;
-                    if (board.getPieceAt(column + dx, row).isBlack() != piece.isBlack()) moves[index] = new int[]{column + dx, row};
-                } else moves[index] = new int[]{column + dx, row};
-                index++;
+                    if (board.getPieceAt(column + dx, row).isBlack() != piece.isBlack()) {
+                        moves[index] = new int[]{column + dx, row};
+                        index++;
+                    }
+                } else {
+                    moves[index] = new int[]{column + dx, row};
+                    index++;
+                }
             }
 
             //Search above
             if (up && board.isInBounds(column - dx, row)) {
                 if (board.isPieceAt(column - dx, row)) {
                     up = false;
-                    if (board.getPieceAt(column - dx, row).isBlack() != piece.isBlack()) moves[index] = new int[]{column - dx, row};
-                } else moves[index] = new int[]{column - dx, row};
-                index++;
+                    if (board.getPieceAt(column - dx, row).isBlack() != piece.isBlack()) {
+                        moves[index] = new int[]{column - dx, row};
+                        index++;
+                    }
+                } else {
+                    moves[index] = new int[]{column - dx, row};
+                    index++;
+                }
             }
 
             //Search right
             if (right && board.isInBounds(column, row + dx)) {
                 if (board.isPieceAt(column, row + dx)) {
                     right = false;
-                    if (board.getPieceAt(column, row + dx).isBlack() != piece.isBlack()) moves[index] = new int[]{column, row + dx};
-                } else moves[index] = new int[]{column, row + dx};
-                index++;
+                    if (board.getPieceAt(column, row + dx).isBlack() != piece.isBlack()) {
+                        moves[index] = new int[]{column, row + dx};
+                        index++;
+                    }
+                } else {
+                    moves[index] = new int[]{column, row + dx};
+                    index++;
+                }
             }
 
             //Search left
             if (left && board.isInBounds(column, row - dx)) {
                 if (board.isPieceAt(column, row - dx)) {
                     left = false;
-                    if (board.getPieceAt(column, row - dx).isBlack() != piece.isBlack()) moves[index] = new int[]{column, row - dx};
-                } else moves[index] = new int[]{column, row - dx};
-                index++;
+                    if (board.getPieceAt(column, row - dx).isBlack() != piece.isBlack()) {
+                        moves[index] = new int[]{column, row - dx};
+                        index++;
+                    }
+                } else {
+                    moves[index] = new int[]{column, row - dx};
+                    index++;
+                }
             }
         }
+        System.out.println(index);
+        System.out.println(Arrays.deepToString(moves));
         int[][] trimmedMoves = new int[index][2];
         System.arraycopy(moves, 0, trimmedMoves, 0, index);
+        System.out.println(Arrays.deepToString(trimmedMoves));
         return trimmedMoves;
 
     }

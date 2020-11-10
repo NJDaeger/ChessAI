@@ -44,6 +44,7 @@ public final class Pawn extends Piece {
         //No attack, move forward 2 spaces if the piece has not moved ever
         if (!hasMoved() && board.isInBounds(column, row + direction) && !board.isPieceAt(column, row + (2 * direction))) {
             moves[index] = new int[]{column, row + (2 * direction)};
+            index++;
         }
 
         int[][] trimmedMoves = new int[index][2];

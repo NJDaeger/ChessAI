@@ -84,6 +84,7 @@ public final class King extends Piece {
         if (board.isInBounds(column, row - 1)) {
             if (!board.isPieceAt(column, row - 1) || board.getPieceAt(column, row - 1).isBlack() != isBlack()) {
                 moves[index] = new int[]{column, row - 1};
+                index++;
             }
         }
 
