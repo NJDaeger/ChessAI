@@ -19,7 +19,7 @@ public class Board {
 
 
         for(int i=0;i<8;i++) {
-            board[i][7] = new Pawn(false);
+            board[i][6] = new Pawn(false);
             board[i][1] = new Pawn(true);
 
         }

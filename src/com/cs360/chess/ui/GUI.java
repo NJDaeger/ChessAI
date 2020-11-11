@@ -9,8 +9,10 @@ import javafx.application.Application;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.ReadOnlyDoubleProperty;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
@@ -24,6 +26,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 import java.util.Arrays;
+import java.util.stream.IntStream;
 
 public class GUI extends Application {
     
@@ -37,6 +40,7 @@ public class GUI extends Application {
 
     //FX stuff
     private GridPane grid;
+    private final TileView[][] tiles =new TileView[8][8];
     private BorderPane borderPane;
     MenuBar menuBar = new MenuBar();
     Menu game = new Menu("Game");
@@ -87,8 +91,8 @@ public class GUI extends Application {
             for (int row = 0; row < 8; row++) {
 
                 //We create a rectangle which is to be filled with the correct color to create a checkered pattern.
-                Rectangle square = new Rectangle();
-                square.setFill(((column + row) % 2 == 0) ? Color.TAN : Color.MAROON);
+                TileView tile = new TileView(column,row);
+                tile.setFill(((column + row) % 2 == 0) ? Color.TAN : Color.MAROON);
 
                 //We use bindings to make the rectangles automatically adjust to window size changes.
                 //Since the board most be square, we must use a conditional binding.
@@ -99,9 +103,10 @@ public class GUI extends Application {
                 DoubleBinding size = (DoubleBinding) Bindings.when(widthProp.greaterThan(heightProp)).then(heightProp.divide(8)).otherwise(widthProp.divide(8));
 
                 //Setting the bindings and adding the tile
-                square.widthProperty().bind(size);
-                square.heightProperty().bind(size);
-                grid.add(square, column, row);
+                tile.widthProperty().bind(size);
+                tile.heightProperty().bind(size);
+                grid.add(tile, column, row);
+                tiles[column][row] = tile;
             }
         }
 
@@ -145,10 +150,36 @@ public class GUI extends Application {
         }
     }
 
+    void clearEvents(){
+        for (TileView[] tile : tiles) {
+            IntStream.range(0, tiles.length).forEach(row -> tile[row].removeEventHandler(MouseEvent.MOUSE_CLICKED, moveableTile));
+        }
+        grid.getChildren().removeIf(node -> node instanceof Label);
+    }
+
     PieceView selected;
+    EventHandler<MouseEvent> moveableTile=event->{
+        if(event.getSource() instanceof TileView) {
+            TileView temp = (TileView) event.getSource();
+            currentGame.getCurrentBoard().movePiece(selected.col,selected.row,temp.col, temp.row);
+        }
+
+        grid.getChildren().removeIf(node -> node instanceof PieceView);
+        update(currentGame.getCurrentBoard());
+
+
+        clearEvents();
+    };
+
 
     //event Handlers
     EventHandler<MouseEvent> selectPiece = event->{
+
+        //remove everything to do with the last set of moves, wipe all markers
+        clearEvents();
+
+
+
         if(event.getSource() instanceof PieceView) {
             selected = (PieceView) event.getSource();
         }
@@ -170,11 +201,10 @@ public class GUI extends Application {
             Label x = new Label("X");
             if(coord[0]==-1)continue;
             grid.add(x,coord[0],coord[1]);
+            tiles[coord[0]][coord[1]].addEventHandler(MouseEvent.MOUSE_CLICKED,moveableTile);
         }
-
     };
 
-    EventHandler<MouseEvent> possibleMove=event->{
-    };
+
 
 }

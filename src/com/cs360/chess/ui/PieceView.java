@@ -7,7 +7,7 @@ import javafx.scene.image.ImageView;
 //GUI object for piece images
 public class PieceView extends ImageView {
     Piece piece;
-    int row, col;
+    int col,row;
     PieceView(Image img, Piece piece,int col,int row){
         super(img);
         this.piece = piece;
