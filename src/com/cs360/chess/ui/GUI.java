@@ -161,6 +161,7 @@ public class GUI extends Application {
     EventHandler<MouseEvent> moveableTile=event->{
         if(event.getSource() instanceof TileView) {
             TileView temp = (TileView) event.getSource();
+            currentGame.getCurrentBoard().getPieceAt(selected.col,selected.row).setHasMoved(true);
             currentGame.getCurrentBoard().movePiece(selected.col,selected.row,temp.col, temp.row);
         }
 
@@ -200,6 +201,7 @@ public class GUI extends Application {
         for(int[] coord : posMoves){
             Label x = new Label("X");
             if(coord[0]==-1)continue;
+
             grid.add(x,coord[0],coord[1]);
             tiles[coord[0]][coord[1]].addEventHandler(MouseEvent.MOUSE_CLICKED,moveableTile);
         }
