@@ -18,6 +18,7 @@ public class Game implements Serializable {
     private Minimax currentTree;
     private Stack<Board> undoStack;
     private Stack<Board> redoStack;
+    boolean whiteMove = true; //flag that controls whos turn it is, it's use might change according to minimax, however its current use is for minimax
     //todo handle minimax in this class.
 
     public Game() {

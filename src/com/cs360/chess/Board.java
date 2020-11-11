@@ -16,6 +16,13 @@ public class Board {
         board = new Piece[8][8];
         //[COLUMN][ROW]
 
+
+
+        for(int i=0;i<8;i++) {
+            board[i][7] = new Pawn(false);
+            board[i][1] = new Pawn(true);
+
+        }
         //The black pieces (on top)
         board[0][0] = new Rook(true);
         board[1][0] = new Knight(true);
@@ -25,14 +32,6 @@ public class Board {
         board[5][0] = new Bishop(true);
         board[6][0] = new Knight(true);
         board[7][0] = new Rook(true);
-        board[0][1] = new Pawn(true);
-        board[1][1] = new Pawn(true);
-        board[2][1] = new Pawn(true);
-        board[3][1] = new Pawn(true);
-        board[4][1] = new Pawn(true);
-        board[5][1] = new Pawn(true);
-        board[6][1] = new Pawn(true);
-        board[7][1] = new Pawn(true);
 
         //The white pieces (on bottom)
         board[0][7] = new Rook(false);
@@ -43,14 +42,6 @@ public class Board {
         board[5][7] = new Bishop(false);
         board[6][7] = new Knight(false);
         board[7][7] = new Rook(false);
-        board[0][6] = new Pawn(false);
-        board[1][6] = new Pawn(false);
-        board[2][6] = new Pawn(false);
-        board[3][6] = new Pawn(false);
-        board[4][6] = new Pawn(false);
-        board[5][6] = new Pawn(false);
-        board[6][6] = new Pawn(false);
-        board[7][6] = new Pawn(false);
     }
     
     /**
