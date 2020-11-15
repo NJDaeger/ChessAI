@@ -1,5 +1,6 @@
 package com.cs360.chess;
 
+import com.cs360.chess.piece.Piece;
 import com.cs360.chess.ui.Minimax;
 
 import java.io.Serializable;
@@ -18,7 +19,8 @@ public class Game implements Serializable {
     private Minimax currentTree;
     private Stack<Board> undoStack;
     private Stack<Board> redoStack;
-    boolean whiteMove = true; //flag that controls whos turn it is, it's use might change according to minimax, however its current use is for minimax
+    private boolean aiTurn = true; //flag that controls whos turn it is, it's use might change according to minimax, however its current use is for minimax
+    private int[] selected;
     //todo handle minimax in this class.
 
     public Game() {
@@ -32,6 +34,22 @@ public class Game implements Serializable {
 
     public Board getCurrentBoard() {
         return currentBoard;
+    }
+
+    public int[] getSelectedLocation() {
+        return selected;
+    }
+
+    public void setSelectedLocation(int[] piece) {
+        this.selected = piece;
+    }
+
+    public boolean isAiTurn() {
+        return aiTurn;
+    }
+
+    public void setAiTurn(boolean aiTurn) {
+        this.aiTurn = aiTurn;
     }
 
     public void setDepth(int depth) {

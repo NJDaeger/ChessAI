@@ -70,6 +70,7 @@ public class Board {
         if (column > 7 || row > 7 || newColumn > 7 || newRow > 7) throw new RuntimeException("Piece out of bounds");
         Piece oldPiece = board[newColumn][newRow];
         board[newColumn][newRow] = board[column][row];
+        board[newColumn][newRow].setHasMoved(true);
         board[column][row] = null;
         return oldPiece;
     }

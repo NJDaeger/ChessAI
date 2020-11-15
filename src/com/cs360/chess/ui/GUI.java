@@ -9,7 +9,6 @@ import javafx.application.Application;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.ReadOnlyDoubleProperty;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -21,12 +20,11 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 import java.util.Arrays;
-import java.util.stream.IntStream;
 
 public class GUI extends Application {
     
@@ -39,25 +37,37 @@ public class GUI extends Application {
     private Game currentGame;
 
     //FX stuff
-    private GridPane grid;
-    private final TileView[][] tiles =new TileView[8][8];
+    private GridPane tileGrid;
+    private GridPane clickGrid;
+    private GridPane pieceGrid;
+    private StackPane boardStack;
+
+    //private final TileView[][] tiles =new TileView[8][8];
     private BorderPane borderPane;
-    MenuBar menuBar = new MenuBar();
-    Menu game = new Menu("Game");
-    MenuItem flipBoard = new MenuItem("Flip Board");
-    MenuItem newGame = new MenuItem("New Game");
-    //MenuItem difficulty = new MenuItem("Adjust Difficulty");
-    MenuItem restart = new MenuItem("Restart");
-    MenuItem save = new MenuItem("Save");
-    MenuItem quit = new MenuItem("Quit");
 
-    Menu exit = new Menu("Exit");
+    private MenuBar menuBar = new MenuBar();
+    private Menu game = new Menu("Game");
+    private MenuItem flipBoard = new MenuItem("Flip Board");
+    private MenuItem newGame = new MenuItem("New Game");
+    private MenuItem restart = new MenuItem("Restart");
+    private MenuItem save = new MenuItem("Save");
+    private MenuItem quit = new MenuItem("Quit");
 
-    Menu difficulty = new Menu("Adjust Difficulty");
-    MenuItem easy= new MenuItem("Beginner");
-    MenuItem normal= new MenuItem("Casual");
-    MenuItem hard= new MenuItem("Intermediate");
-    MenuItem master= new MenuItem("Master");
+    private Menu exit = new Menu("Exit");
+
+    private Menu difficulty = new Menu("Adjust Difficulty");
+    private MenuItem easy= new MenuItem("Beginner");
+    private MenuItem normal= new MenuItem("Casual");
+    private MenuItem hard= new MenuItem("Intermediate");
+    private MenuItem master= new MenuItem("Master");
+
+    //We use bindings to make the rectangles automatically adjust to window size changes.
+    //Since the board most be square, we must use a conditional binding.
+    //If the width is larger than the height, the height property divided by 8 is used as the length of each side of the square
+    //If the height is larger than the width, the width property divided by 8 is used as the length of each side of the square
+    private ReadOnlyDoubleProperty widthProp;
+    private DoubleBinding heightProp;
+    private DoubleBinding size;
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -66,7 +76,11 @@ public class GUI extends Application {
 
         borderPane = new BorderPane();
         currentGame = new Game();
-        grid = new GridPane();
+
+        tileGrid = new GridPane();
+        pieceGrid = new GridPane();
+        clickGrid = new GridPane();
+        boardStack = new StackPane();
 
         //Set a base size for the stage
         stage.setHeight(600);
@@ -83,8 +97,17 @@ public class GUI extends Application {
         borderPane.setTop(menuBar);
         
         //General alignment/placement of the playing grid
-        grid.setAlignment(Pos.CENTER);
-        borderPane.setCenter(grid);
+        tileGrid.setAlignment(Pos.CENTER);
+        pieceGrid.setAlignment(Pos.CENTER);
+        clickGrid.setAlignment(Pos.CENTER);
+        boardStack.getChildren().add(tileGrid);
+        boardStack.getChildren().add(pieceGrid);
+        boardStack.getChildren().add(clickGrid);
+        borderPane.setCenter(boardStack);
+
+        widthProp = borderPane.widthProperty();
+        heightProp = borderPane.heightProperty().subtract(menuBar.heightProperty());
+        size = (DoubleBinding) Bindings.when(widthProp.greaterThan(heightProp)).then(heightProp.divide(8)).otherwise(widthProp.divide(8));
 
         //Generating all the tiles on the grid.
         for (int column = 0; column < 8; column++) {
@@ -94,19 +117,18 @@ public class GUI extends Application {
                 TileView tile = new TileView(column,row);
                 tile.setFill(((column + row) % 2 == 0) ? Color.TAN : Color.MAROON);
 
-                //We use bindings to make the rectangles automatically adjust to window size changes.
-                //Since the board most be square, we must use a conditional binding.
-                //If the width is larger than the height, the height property divided by 8 is used as the length of each side of the square
-                //If the height is larger than the width, the width property divided by 8 is used as the length of each side of the square
-                ReadOnlyDoubleProperty widthProp = borderPane.widthProperty();
-                DoubleBinding heightProp = borderPane.heightProperty().subtract(menuBar.heightProperty());
-                DoubleBinding size = (DoubleBinding) Bindings.when(widthProp.greaterThan(heightProp)).then(heightProp.divide(8)).otherwise(widthProp.divide(8));
-
                 //Setting the bindings and adding the tile
                 tile.widthProperty().bind(size);
                 tile.heightProperty().bind(size);
-                grid.add(tile, column, row);
-                tiles[column][row] = tile;
+                tileGrid.add(tile, column, row);
+                //tiles[column][row] = tile;
+
+                TileView clickableTile = new TileView(column, row);
+                clickableTile.setOpacity(0);
+                clickableTile.addEventHandler(MouseEvent.MOUSE_CLICKED, selectPiece);
+                clickableTile.widthProperty().bind(size);
+                clickableTile.heightProperty().bind(size);
+                clickGrid.add(clickableTile, column, row);
             }
         }
 
@@ -121,6 +143,7 @@ public class GUI extends Application {
 
     //updates the GUI
     void update(Board board){
+        pieceGrid.getChildren().clear();
         Piece[][] tempBoard = board.getBoard();
 
         for(int column=0;column<8;column++){
@@ -131,19 +154,18 @@ public class GUI extends Application {
 
                     //We get the SVG icon of the given piece and load it in an ImageView node.
                     PieceView img = new PieceView(IconMap.getIcon(tempBoard[column][row]), tempBoard[column][row], column, row);
-                    img.addEventHandler(MouseEvent.MOUSE_CLICKED,selectPiece);
-                    //We use bindings to make the rectangles automatically adjust to window size changes.
-                    //Since the board most be square, we must use a conditional binding.
-                    //If the width is larger than the height, the height property divided by 8 is used as the length of each side of the square
-                    //If the height is larger than the width, the width property divided by 8 is used as the length of each side of the square
-                    ReadOnlyDoubleProperty widthProp = borderPane.widthProperty();
-                    DoubleBinding heightProp = borderPane.heightProperty().subtract(menuBar.heightProperty());
-                    DoubleBinding size = (DoubleBinding) Bindings.when(widthProp.greaterThan(heightProp)).then(heightProp.divide(8)).otherwise(widthProp.divide(8));
 
                     //Setting the bindings and adding the tile
                     img.fitWidthProperty().bind(size);
                     img.fitHeightProperty().bind(size);
-                    grid.add(img, column, row);
+                    pieceGrid.add(img, column, row);
+                } else {
+                    //Fill the spot with an empty and invisible tile if there is no piece in it.
+                    TileView clickableTile = new TileView(column, row);
+                    clickableTile.setOpacity(0);
+                    clickableTile.widthProperty().bind(size);
+                    clickableTile.heightProperty().bind(size);
+                    pieceGrid.add(clickableTile, column, row);
                 }
 
             }
@@ -151,40 +173,38 @@ public class GUI extends Application {
     }
 
     void clearEvents(){
-        for (TileView[] tile : tiles) {
-            IntStream.range(0, tiles.length).forEach(row -> tile[row].removeEventHandler(MouseEvent.MOUSE_CLICKED, moveableTile));
-        }
-        grid.getChildren().removeIf(node -> node instanceof Label);
+        tileGrid.getChildren().removeIf(node -> node instanceof Label);
     }
 
-    PieceView selected;
-    EventHandler<MouseEvent> moveableTile=event->{
-        if(event.getSource() instanceof TileView) {
-            TileView temp = (TileView) event.getSource();
-            currentGame.getCurrentBoard().getPieceAt(selected.col,selected.row).setHasMoved(true);
-            currentGame.getCurrentBoard().movePiece(selected.col,selected.row,temp.col, temp.row);
-        }
-
-        grid.getChildren().removeIf(node -> node instanceof PieceView);
-        update(currentGame.getCurrentBoard());
-
-
-        clearEvents();
-    };
-
-
     //event Handlers
-    EventHandler<MouseEvent> selectPiece = event->{
+    EventHandler<MouseEvent> selectPiece = event -> {
 
         //remove everything to do with the last set of moves, wipe all markers
         clearEvents();
 
+        int[] location = currentGame.getSelectedLocation(); //Possible current selected location
+        int column = ((TileView) event.getSource()).col; //The column of the spot just clicked
+        int row = ((TileView) event.getSource()).row; //The row of the spot just picked
 
-
-        if(event.getSource() instanceof PieceView) {
-            selected = (PieceView) event.getSource();
+        if (location != null) {
+            Piece piece = currentGame.getCurrentBoard().getPieceAt(location[0], location[1]);
+            if (isValidSpot(piece.computePossible(currentGame.getCurrentBoard(), location[0], location[1]), column, row)) {
+                currentGame.getCurrentBoard().movePiece(location[0], location[1], column, row);
+                update(currentGame.getCurrentBoard());
+                currentGame.setSelectedLocation(null);
+            }
+            return;
         }
-        System.out.println(selected.col+" "+ selected.row);
+
+        Node sel = getCell(pieceGrid, column, row);
+        if (sel instanceof PieceView) {
+            currentGame.setSelectedLocation(new int[]{column, row});
+            location = currentGame.getSelectedLocation();
+        }
+        else {
+            currentGame.setSelectedLocation(null);
+            return;
+        }
 
         /*
         add possibleMove->{} event handler to the tiles at the coordinate,
@@ -195,18 +215,31 @@ public class GUI extends Application {
         */
 
         //for now we will use a temp possible move to do this........
-        int[][] posMoves = selected.piece.computePossible(currentGame.getCurrentBoard(), selected.col,selected.row);
-        System.out.println(Arrays.deepToString(posMoves));
+        int[][] posMoves = currentGame.getCurrentBoard().getPieceAt(location[0], location[1]).computePossible(currentGame.getCurrentBoard(), column, row);
 
         for(int[] coord : posMoves){
             Label x = new Label("X");
             if(coord[0]==-1)continue;
 
-            grid.add(x,coord[0],coord[1]);
-            tiles[coord[0]][coord[1]].addEventHandler(MouseEvent.MOUSE_CLICKED,moveableTile);
+            tileGrid.add(x,coord[0],coord[1]);
+//            tiles[coord[0]][coord[1]].addEventHandler(MouseEvent.MOUSE_CLICKED,moveableTile);
         }
     };
 
+    private static Node getCell(GridPane gridPane, int column, int row) {
+        for (Node node : gridPane.getChildren()) {
+            if (GridPane.getColumnIndex(node) == column && GridPane.getRowIndex(node) == row) {
+                return node;
+            }
+        }
+        return null;
+    }
 
+    private static boolean isValidSpot(int[][] possibleMoves, int column, int row) {
+        for (int[] location : possibleMoves) {
+            if (location[0] == column && location[1] == row) return true;
+        }
+        return false;
+    }
 
 }
