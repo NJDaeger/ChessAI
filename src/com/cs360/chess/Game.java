@@ -1,6 +1,5 @@
 package com.cs360.chess;
 
-import com.cs360.chess.piece.Piece;
 import com.cs360.chess.ui.Minimax;
 
 import java.io.Serializable;

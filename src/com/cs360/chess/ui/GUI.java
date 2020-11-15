@@ -13,26 +13,23 @@ import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
-
-import java.util.Arrays;
 
 public class GUI extends Application {
     
     public static void main(String[] args) {
         launch(args);
     }
-    
-
 
     private Game currentGame;
 
@@ -77,9 +74,13 @@ public class GUI extends Application {
         borderPane = new BorderPane();
         currentGame = new Game();
 
+        //Tile grid holding the colored tiles of the board.
         tileGrid = new GridPane();
+        //Piece grid holding the pieces
         pieceGrid = new GridPane();
+        //Click grid where the user interacts with the board and where tiles are highlighted from
         clickGrid = new GridPane();
+        //Stack pane which compiles each of the grids together in one object.
         boardStack = new StackPane();
 
         //Set a base size for the stage
@@ -96,7 +97,7 @@ public class GUI extends Application {
         borderPane = new BorderPane();
         borderPane.setTop(menuBar);
         
-        //General alignment/placement of the playing grid
+        //General alignment/placement of the grids
         tileGrid.setAlignment(Pos.CENTER);
         pieceGrid.setAlignment(Pos.CENTER);
         clickGrid.setAlignment(Pos.CENTER);
@@ -109,12 +110,13 @@ public class GUI extends Application {
         heightProp = borderPane.heightProperty().subtract(menuBar.heightProperty());
         size = (DoubleBinding) Bindings.when(widthProp.greaterThan(heightProp)).then(heightProp.divide(8)).otherwise(widthProp.divide(8));
 
-        //Generating all the tiles on the grid.
+        //Generating all the tiles on the tile grid.
         for (int column = 0; column < 8; column++) {
             for (int row = 0; row < 8; row++) {
 
                 //We create a rectangle which is to be filled with the correct color to create a checkered pattern.
-                TileView tile = new TileView(column,row);
+//                TileView tile = new TileView(column,row);
+                Rectangle tile = new Rectangle();
                 tile.setFill(((column + row) % 2 == 0) ? Color.TAN : Color.MAROON);
 
                 //Setting the bindings and adding the tile
@@ -123,9 +125,9 @@ public class GUI extends Application {
                 tileGrid.add(tile, column, row);
                 //tiles[column][row] = tile;
 
-                TileView clickableTile = new TileView(column, row);
+                ClickView clickableTile = new ClickView(column, row);
                 clickableTile.setOpacity(0);
-                clickableTile.addEventHandler(MouseEvent.MOUSE_CLICKED, selectPiece);
+                clickableTile.addEventHandler(MouseEvent.MOUSE_CLICKED, tileClickEvent);
                 clickableTile.widthProperty().bind(size);
                 clickableTile.heightProperty().bind(size);
                 clickGrid.add(clickableTile, column, row);
@@ -153,7 +155,7 @@ public class GUI extends Application {
                 if(tempBoard[column][row]!=null){
 
                     //We get the SVG icon of the given piece and load it in an ImageView node.
-                    PieceView img = new PieceView(IconMap.getIcon(tempBoard[column][row]), tempBoard[column][row], column, row);
+                    ImageView img = new ImageView(IconMap.getIcon(tempBoard[column][row])/*, tempBoard[column][row], column, row*/);
 
                     //Setting the bindings and adding the tile
                     img.fitWidthProperty().bind(size);
@@ -161,30 +163,29 @@ public class GUI extends Application {
                     pieceGrid.add(img, column, row);
                 } else {
                     //Fill the spot with an empty and invisible tile if there is no piece in it.
-                    TileView clickableTile = new TileView(column, row);
-                    clickableTile.setOpacity(0);
-                    clickableTile.widthProperty().bind(size);
-                    clickableTile.heightProperty().bind(size);
-                    pieceGrid.add(clickableTile, column, row);
+//                    TileView clickableTile = new TileView(column, row);
+                    Rectangle emptySpot = new Rectangle();
+                    emptySpot.setOpacity(0);
+                    emptySpot.widthProperty().bind(size);
+                    emptySpot.heightProperty().bind(size);
+                    pieceGrid.add(emptySpot, column, row);
                 }
 
             }
         }
     }
 
-    void clearEvents(){
-        tileGrid.getChildren().removeIf(node -> node instanceof Label);
-    }
-
     //event Handlers
-    EventHandler<MouseEvent> selectPiece = event -> {
+    EventHandler<MouseEvent> tileClickEvent = event -> {
 
         //remove everything to do with the last set of moves, wipe all markers
-        clearEvents();
-
+        clickGrid.getChildren().stream().filter(cell -> cell.getOpacity() == 1).forEach(cell -> cell.setOpacity(0));
         int[] location = currentGame.getSelectedLocation(); //Possible current selected location
-        int column = ((TileView) event.getSource()).col; //The column of the spot just clicked
-        int row = ((TileView) event.getSource()).row; //The row of the spot just picked
+//        int column = ((ClickView) event.getSource()).getColumn(); //The column of the spot just clicked
+//        int row = ((ClickView) event.getSource()).getRow(); //The row of the spot just picked
+
+        int column = ((ClickView) event.getSource()).getColumn();
+        int row = ((ClickView) event.getSource()).getRow();
 
         if (location != null) {
             Piece piece = currentGame.getCurrentBoard().getPieceAt(location[0], location[1]);
@@ -192,12 +193,13 @@ public class GUI extends Application {
                 currentGame.getCurrentBoard().movePiece(location[0], location[1], column, row);
                 update(currentGame.getCurrentBoard());
                 currentGame.setSelectedLocation(null);
+                return;
             }
-            return;
+            else currentGame.setSelectedLocation(null);
         }
 
-        Node sel = getCell(pieceGrid, column, row);
-        if (sel instanceof PieceView) {
+        Node selection = getCell(pieceGrid, column, row);
+        if (selection instanceof ImageView) {
             currentGame.setSelectedLocation(new int[]{column, row});
             location = currentGame.getSelectedLocation();
         }
@@ -206,23 +208,13 @@ public class GUI extends Application {
             return;
         }
 
-        /*
-        add possibleMove->{} event handler to the tiles at the coordinate,
-        if the tile has an enemy piece... then add the event handler to the piece and the tile..
-        the plan is to call calcPossible() on the PieceViews piece, and loop through the returned array to
-        get the coords of each possible move. then return the children of the corresponding gridpane pane and add the
-        event child to those objects
-        */
-
         //for now we will use a temp possible move to do this........
         int[][] posMoves = currentGame.getCurrentBoard().getPieceAt(location[0], location[1]).computePossible(currentGame.getCurrentBoard(), column, row);
 
-        for(int[] coord : posMoves){
-            Label x = new Label("X");
-            if(coord[0]==-1)continue;
-
-            tileGrid.add(x,coord[0],coord[1]);
-//            tiles[coord[0]][coord[1]].addEventHandler(MouseEvent.MOUSE_CLICKED,moveableTile);
+        //For all possible moves for the currently selected piece, we just set the opacity of the clickGrid cell to 1 so it outlines the cell.
+        for(int[] coord : posMoves) {
+            Node cell = getCell(clickGrid, coord[0], coord[1]);
+            cell.setOpacity(1); //Ignore this check, it will not be null unless we screw up
         }
     };
 
