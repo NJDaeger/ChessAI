@@ -10,7 +10,6 @@ public final class IconMap {
 
     private static final Map<Integer, Image> whitePieces = new HashMap<>();
     private static final Map<Integer, Image> blackPieces = new HashMap<>();
-    private static Image selected;
 
     public static void loadIcons() {
         whitePieces.put(0, new Image(IconMap.class.getResourceAsStream("/images/pawn_light.svg")));
@@ -26,15 +25,10 @@ public final class IconMap {
         blackPieces.put(3, new Image(IconMap.class.getResourceAsStream("/images/bishop_dark.svg")));
         blackPieces.put(4, new Image(IconMap.class.getResourceAsStream("/images/king_dark.svg")));
         blackPieces.put(5, new Image(IconMap.class.getResourceAsStream("/images/queen_dark.svg")));
-        selected = new Image(IconMap.class.getResourceAsStream("/images/selected.svg"));
     }
 
     public static Image getIcon(Piece piece) {
         return (piece.isBlack() ? blackPieces : whitePieces).get(piece.getIconId());
-    }
-
-    public static Image getPossibleMoveImage() {
-        return selected;
     }
 
 }
