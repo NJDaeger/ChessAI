@@ -157,11 +157,12 @@ public class Board {
 
     public int calcBoardScore(){
         Piece[] whitePieces = getWhitePieces();
-        Piece[] blackPieces = getWhitePieces();
+        Piece[] blackPieces = getBlackPieces();
         int whiteScore =0;
         int blackScore =0;
-
+        System.out.println(whitePieces);
         for (Piece whitePiece : whitePieces) {
+            //System.out.print(whitePiece);
             whiteScore += whitePiece.getPoints();
         }
         for (Piece blackPiece : blackPieces) {
