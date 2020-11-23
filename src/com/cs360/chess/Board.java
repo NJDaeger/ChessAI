@@ -6,9 +6,9 @@ import com.cs360.chess.piece.*;
  * The grid of pieces which can be manipulated. This can represent a primary board, or a future board depending on its context.
  */
 public class Board {
-
+    private int boardValue =0; //the difference of white - black piece values, used for minimax.
     private Piece[][] board;
-    
+    boolean whiteToMove = true; //flag that controls who's turn it is
     /**
      * Creates a new board instance with a fresh set of pieces
      */
@@ -52,12 +52,18 @@ public class Board {
         this.board = new Piece[8][8];
         //Just using 8 since the board wont change size
         for (int column = 0; column < 8; column++) {
-            for (int row = 0; row < 8; row++) {
-                board[column][row] = parent.board[column][row];
-            }
+            System.arraycopy(parent.board[column], 0, board[column], 0, 8);
         }
     }
-    
+
+    /**
+     *
+     * @return Returns the value of who is next to move
+     */
+    public boolean isWhiteToMove() {
+        return whiteToMove;
+    }
+
     /**
      * Moves a piece from column,row to newColumn, newRow. Top left is 0, 0, bottom right is 7, 7
      * @param column The X position of the piece
@@ -72,6 +78,8 @@ public class Board {
         board[newColumn][newRow] = board[column][row];
         board[newColumn][newRow].setHasMoved(true);
         board[column][row] = null;
+        changeTurn();
+        calcBoardScore();
         return oldPiece;
     }
 
@@ -142,5 +150,24 @@ public class Board {
         }
         return pieces;
     }
+
+    public int calcBoardScore(){
+        Piece[] whitePieces = getWhitePieces();
+        Piece[] blackPieces = getWhitePieces();
+        int whiteScore =0;
+        int blackScore =0;
+
+        for (Piece whitePiece : whitePieces) {
+            whiteScore += whitePiece.getPoints();
+        }
+        for (Piece blackPiece : blackPieces) {
+            blackScore += blackPiece.getPoints();
+        }
+
+        int score = whiteScore-blackScore;
+        System.out.println(whiteScore+" "+blackScore);
+        return boardValue;
+    }
+    void changeTurn(){whiteToMove=!whiteToMove;}
 
 }

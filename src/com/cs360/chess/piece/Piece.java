@@ -14,7 +14,7 @@ public abstract class Piece {
     public Piece(int iconId, boolean isBlack, int points) {
         this.iconId = iconId;
         this.isBlack = isBlack;
-        this.points = (isBlack ? -1 : 1) * points;
+        this.points = points;
     }
 
     public void setHasMoved(boolean moved) {
@@ -177,11 +177,9 @@ public abstract class Piece {
                 }
             }
         }
-        System.out.println(index);
-        System.out.println(Arrays.deepToString(moves));
+
         int[][] trimmedMoves = new int[index][2];
         System.arraycopy(moves, 0, trimmedMoves, 0, index);
-        System.out.println(Arrays.deepToString(trimmedMoves));
         return trimmedMoves;
 
     }

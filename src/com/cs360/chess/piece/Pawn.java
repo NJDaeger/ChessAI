@@ -5,7 +5,7 @@ import com.cs360.chess.Board;
 public final class Pawn extends Piece {
 
     public Pawn(boolean isBlack) {
-        super(0, isBlack, 10);
+        super(0, isBlack, 1);
     }
     
     /**

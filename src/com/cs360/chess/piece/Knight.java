@@ -2,12 +2,10 @@ package com.cs360.chess.piece;
 
 import com.cs360.chess.Board;
 
-import java.util.Arrays;
-
 public final class Knight extends Piece {
     
     public Knight(boolean isBlack) {
-        super(2, isBlack, 30);
+        super(2, isBlack, 3);
     }
     
     // L L L L L L L L L

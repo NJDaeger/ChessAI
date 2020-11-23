@@ -3,9 +3,8 @@ package com.cs360.chess.piece;
 import com.cs360.chess.Board;
 
 public final class King extends Piece {
-    
     public King(boolean isBlack) {
-        super(4, isBlack, 900);
+        super(4, isBlack, 1000);
     }
     
     //all directions, max of 1 space at a time

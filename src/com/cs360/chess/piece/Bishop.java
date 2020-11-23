@@ -3,9 +3,9 @@ package com.cs360.chess.piece;
 import com.cs360.chess.Board;
 
 public final class Bishop extends Piece {
-
+    int value = 3;
     public Bishop(boolean isBlack) {
-        super(3, isBlack, 30);
+        super(3, isBlack, 3);
     }
 
     @Override
