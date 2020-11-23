@@ -1,10 +1,9 @@
-package com.cs360.chess.AI;
+package com.cs360.chess.ai;
 
 import com.cs360.chess.Board;
 import com.cs360.chess.piece.Piece;
 
 import java.util.Stack;
-import java.util.prefs.NodeChangeEvent;
 
 public class Minimax {
     private boolean isWhite = false;

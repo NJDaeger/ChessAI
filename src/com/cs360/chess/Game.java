@@ -1,6 +1,6 @@
 package com.cs360.chess;
 
-import com.cs360.chess.AI.Minimax;
+import com.cs360.chess.ai.Minimax;
 
 import java.io.Serializable;
 import java.util.Stack;
