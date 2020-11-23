@@ -132,7 +132,9 @@ public class Board {
                 if (board[column][row] != null && board[column][row].isBlack()) pieces[i++] = board[column][row];
             }
         }
-        return pieces;
+        Piece[] resized = new Piece[i];
+        System.arraycopy(pieces, 0, resized, 0, i);
+        return resized;
     }
 
     /**
@@ -148,7 +150,9 @@ public class Board {
                 if (board[column][row] != null && !board[column][row].isBlack()) pieces[i++] = board[column][row];
             }
         }
-        return pieces;
+        Piece[] resized = new Piece[i];
+        System.arraycopy(pieces, 0, resized, 0, i);
+        return resized;
     }
 
     public int calcBoardScore(){
