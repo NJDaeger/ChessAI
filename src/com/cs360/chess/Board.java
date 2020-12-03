@@ -178,7 +178,6 @@ public class Board {
         Piece[] blackPieces = getBlackPieces();
         int whiteScore =0;
         int blackScore =0;
-        System.out.println(whitePieces);
         for (Piece whitePiece : whitePieces) {
             //System.out.print(whitePiece);
             whiteScore += whitePiece.getPoints();
@@ -188,7 +187,6 @@ public class Board {
         }
 
         int score = whiteScore-blackScore;
-        System.out.println(whiteScore+" "+blackScore);
         return boardValue;
     }
     void changeTurn(){whiteToMove=!whiteToMove;}

@@ -68,8 +68,10 @@ public class Game implements Serializable {
         return undoStack.peek();
     }
     public void turn(int column, int row, int newColumn, int newRow){
+        if(!currentBoard.isWhiteToMove()) {
+            currentTree = new Minimax(currentBoard, depth);
+        }
         currentBoard.movePiece(column,row,newColumn,newRow);
-        currentTree = new Minimax(currentBoard,depth);
     }
 
 }
