@@ -27,6 +27,7 @@ public class Game implements Serializable {
         //The last move we just undid
         this.redoStack = new Stack<>();
         this.currentBoard = new Board();
+        currentTree.killTree();
         this.currentTree = new Minimax(currentBoard, depth);
     }
 
@@ -70,8 +71,15 @@ public class Game implements Serializable {
     public void turn(int column, int row, int newColumn, int newRow){
         if(!currentBoard.isWhiteToMove()) {
             currentTree = new Minimax(currentBoard, depth);
+            currentBoard.movePiece(column,row,newColumn,newRow);//replace with ai move method
         }
-        currentBoard.movePiece(column,row,newColumn,newRow);
+        else{
+            currentBoard.movePiece(column,row,newColumn,newRow);
+        }
+
+
     }
+
+
 
 }

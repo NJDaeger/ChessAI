@@ -89,6 +89,9 @@ public class Board {
         changeTurn();
         calcBoardScore();
     }
+    public void aiMove(Board board){//for AI
+
+    }
 
     /**
      * Get a piece at a specific location on the board.

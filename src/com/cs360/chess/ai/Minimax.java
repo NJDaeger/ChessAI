@@ -23,16 +23,32 @@ public class Minimax {
     public void changeDepth(int x){
         depth = x;
     }
-    private int evaluate() {
-        return 0;
+    public void killTree(){
+        root = null;
     }
 
     public Node getRoot() {
         return root;
     }
 
+    /**returns the board after the best move for the ai
+     *
+     */
+    void getBestMove(){
+
+    }
+
+    void pruneTree(){
+
+    }
+
+    void calulateNodeScores(){//recursive
+
+    }
+
     private class Node {
         Node parent;
+        int score =0;
         ArrayList<Node> children = new ArrayList<>();
         private Board boardFuture;
 
@@ -60,24 +76,6 @@ public class Minimax {
                     }
                 }
             }
-
-            /*Piece[][] pieces = boardFuture.getPieces();
-            for (int column = 0; column < 8; column++) {
-                for (int row = 0; row < 8; row++) {
-                    if(pieces[column][row]!=null && pieces[column][row].isBlack()!=boardFuture.isWhiteToMove()){
-                        int[][] posMoves=pieces[column][row].computePossible(boardFuture);
-                        for(int[] coord : posMoves) {
-                            Board childBoard = new Board(boardFuture);//clone
-                            childBoard.movePiece(column,row,coord[0],coord[1]);
-                            Node childNode = new Node(this,boardFuture);
-                            if(depth>1){
-                                childNode.calculateChildren(depth-1);
-                            }
-                            children.add(childNode);
-                        }
-                    }
-                }
-            }*/
         }
     }
 }
