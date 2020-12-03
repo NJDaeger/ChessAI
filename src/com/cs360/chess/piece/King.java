@@ -3,13 +3,18 @@ package com.cs360.chess.piece;
 import com.cs360.chess.Board;
 
 public final class King extends Piece {
-    public King(boolean isBlack) {
-        super(4, isBlack, 1000);
+    public King(boolean isBlack, int column, int row) {
+        super(4, isBlack, 1000, column, row);
     }
-    
+
+    @Override
+    public King clone() {
+        return new King(isBlack(), getColumn(), getRow());
+    }
+
     //all directions, max of 1 space at a time
     @Override
-    public int[][] computePossible(Board board, int column, int row) {
+    public int[][] computePossible(Board board) {
         int[][] moves = new int[8][2];
         int index = 0;
         /*

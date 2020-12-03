@@ -2,6 +2,8 @@ package com.cs360.chess;
 
 import com.cs360.chess.piece.*;
 
+import java.util.Arrays;
+
 /**
  * The grid of pieces which can be manipulated. This can represent a primary board, or a future board depending on its context.
  */
@@ -19,29 +21,29 @@ public class Board {
 
 
         for(int i=0;i<8;i++) {
-            board[i][6] = new Pawn(false);
-            board[i][1] = new Pawn(true);
+            board[i][6] = new Pawn(false, i, 6);
+            board[i][1] = new Pawn(true, i, 1);
 
         }
         //The black pieces (on top)
-        board[0][0] = new Rook(true);
-        board[1][0] = new Knight(true);
-        board[2][0] = new Bishop(true);
-        board[3][0] = new Queen(true);
-        board[4][0] = new King(true);
-        board[5][0] = new Bishop(true);
-        board[6][0] = new Knight(true);
-        board[7][0] = new Rook(true);
+        board[0][0] = new Rook(true, 0, 0);
+        board[1][0] = new Knight(true, 1, 0);
+        board[2][0] = new Bishop(true, 2, 0);
+        board[3][0] = new Queen(true, 3, 0);
+        board[4][0] = new King(true, 4, 0);
+        board[5][0] = new Bishop(true, 5, 0);
+        board[6][0] = new Knight(true, 6, 0);
+        board[7][0] = new Rook(true, 7, 0);
 
         //The white pieces (on bottom)
-        board[0][7] = new Rook(false);
-        board[1][7] = new Knight(false);
-        board[2][7] = new Bishop(false);
-        board[3][7] = new Queen(false);
-        board[4][7] = new King(false);
-        board[5][7] = new Bishop(false);
-        board[6][7] = new Knight(false);
-        board[7][7] = new Rook(false);
+        board[0][7] = new Rook(false, 0, 7);
+        board[1][7] = new Knight(false, 1, 7);
+        board[2][7] = new Bishop(false, 2, 7);
+        board[3][7] = new Queen(false, 3, 7);
+        board[4][7] = new King(false, 4, 7);
+        board[5][7] = new Bishop(false, 5, 7);
+        board[6][7] = new Knight(false, 6, 7);
+        board[7][7] = new Rook(false, 7, 7);
     }
     
     /**
@@ -51,10 +53,13 @@ public class Board {
     public Board(Board parent) {
         this.board = new Piece[8][8];
         this.whiteToMove = parent.whiteToMove;
-        //Just using 8 since the board wont change size
-        for (int column = 0; column < 8; column++) {
-            System.arraycopy(parent.board[column], 0, board[column], 0, 8);
-}
+
+        for (Piece[] col : parent.board) {
+            for (Piece piece : col) {
+                if (piece == null) continue;
+                this.board[piece.getColumn()][piece.getRow()] = piece.clone();
+            }
+        }
     }
 
     /**
@@ -78,6 +83,8 @@ public class Board {
         Piece oldPiece = board[newColumn][newRow];
         board[newColumn][newRow] = board[column][row];
         board[newColumn][newRow].setHasMoved(true);
+        board[newColumn][newRow].setColumn(newColumn);
+        board[newColumn][newRow].setRow(newRow);
         board[column][row] = null;
         changeTurn();
         calcBoardScore();

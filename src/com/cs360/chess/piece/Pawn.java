@@ -4,21 +4,20 @@ import com.cs360.chess.Board;
 
 public final class Pawn extends Piece {
 
-    public Pawn(boolean isBlack) {
-        super(0, isBlack, 1);
+    public Pawn(boolean isBlack, int column, int row) {
+        super(0, isBlack, 1, column, row);
     }
-    
-    /**
-     * @param board The game board to use
-     * @param column Column of said piece
-     * @param row Row of said piece
-     * @return A 2D array of integer coordinates eg. {{0,0},{1,1},{2,2},{3,3}}.
-     */
+
+    @Override
+    public Pawn clone() {
+        return new Pawn(isBlack(), getColumn(), getRow());
+    }
+
     //2 spaces forward first shot if clear
     //1 space forward from then on if clear
     //can move diagonally 1 space (forward) only if there is a piece in the said diagonal spot
     @Override
-    public int[][] computePossible(Board board, int column, int row) {
+    public int[][] computePossible(Board board) {
         int direction = isBlack() ? 1 : -1;
         int[][] moves = new int[4][2];
         int index = 0;

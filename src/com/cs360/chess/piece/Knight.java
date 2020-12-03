@@ -4,14 +4,19 @@ import com.cs360.chess.Board;
 
 public final class Knight extends Piece {
     
-    public Knight(boolean isBlack) {
-        super(2, isBlack, 3);
+    public Knight(boolean isBlack, int column, int row) {
+        super(2, isBlack, 3, column, row);
     }
-    
+
+    @Override
+    public Knight clone() {
+        return new Knight(isBlack(), getColumn(), getRow());
+    }
+
     // L L L L L L L L L
     //can skip
     @Override
-    public int[][] computePossible(Board board, int column, int row) {
+    public int[][] computePossible(Board board) {
         int[][] moves = new int[8][2];
         int index = 0;
         /*

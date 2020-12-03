@@ -4,18 +4,25 @@ import com.cs360.chess.Board;
 
 import java.util.Arrays;
 
-public abstract class Piece {
+public abstract class Piece implements Cloneable {
 
     private final int points;
     private boolean hasMoved;
     private final int iconId;
     private final boolean isBlack;
+    protected int column;
+    protected int row;
     
-    public Piece(int iconId, boolean isBlack, int points) {
+    public Piece(int iconId, boolean isBlack, int points, int column, int row) {
         this.iconId = iconId;
         this.isBlack = isBlack;
         this.points = points;
+        this.column = column;
+        this.row = row;
     }
+
+    @Override
+    public abstract Piece clone();
 
     public void setHasMoved(boolean moved) {
         this.hasMoved = moved;
@@ -37,11 +44,17 @@ public abstract class Piece {
         return iconId;
     }
 
-    public abstract int[][] computePossible(Board board, int column, int row);
+    /**
+     * @param board The game board to use
+     * @return A 2D array of integer coordinates eg. {{0,0},{1,1},{2,2},{3,3}}.
+     */
+    public abstract int[][] computePossible(Board board);
 
-    protected static int[][] diagonalMoves(Board board, int column, int row, Piece piece) {
+    protected static int[][] diagonalMoves(Board board, Piece piece) {
         int[][] moves = new int[13][2];//The most diagonal moves we can have is 13
         int index = 0;
+        int column = piece.getColumn();
+        int row = piece.getRow();
 
         boolean br = true;
         boolean bl = true;
@@ -110,9 +123,11 @@ public abstract class Piece {
         return trimmedMoves;
     }
 
-    protected static int[][] straightMoves(Board board, int column, int row, Piece piece) {
+    protected static int[][] straightMoves(Board board, Piece piece) {
         int[][] moves = new int[14][2];
         int index = 0;
+        int column = piece.getColumn();
+        int row = piece.getRow();
 
         boolean up = true;
         boolean down = true;
@@ -184,4 +199,19 @@ public abstract class Piece {
 
     }
 
+    public int getColumn() {
+        return column;
+    }
+
+    public void setColumn(int column) {
+        this.column = column;
+    }
+
+    public int getRow() {
+        return row;
+    }
+
+    public void setRow(int row) {
+        this.row = row;
+    }
 }

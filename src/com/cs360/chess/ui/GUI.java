@@ -189,7 +189,7 @@ public class GUI extends Application {
 
         if (location != null) {
             Piece piece = currentGame.getCurrentBoard().getPieceAt(location[0], location[1]);
-            if (isValidSpot(piece.computePossible(currentGame.getCurrentBoard(), location[0], location[1]), column, row) && (piece.isBlack()!=currentGame.getCurrentBoard().isWhiteToMove())) {
+            if (isValidSpot(piece.computePossible(currentGame.getCurrentBoard()), column, row) && (piece.isBlack()!=currentGame.getCurrentBoard().isWhiteToMove())) {
                 currentGame.turn(location[0], location[1], column, row);
                 update(currentGame.getCurrentBoard());
                 currentGame.setSelectedLocation(null);
@@ -209,7 +209,7 @@ public class GUI extends Application {
         }
 
         //for now we will use a temp possible move to do this........
-        int[][] posMoves = currentGame.getCurrentBoard().getPieceAt(location[0], location[1]).computePossible(currentGame.getCurrentBoard(), column, row);
+        int[][] posMoves = currentGame.getCurrentBoard().getPieceAt(location[0], location[1]).computePossible(currentGame.getCurrentBoard());
 
         //For all possible moves for the currently selected piece, we just set the opacity of the clickGrid cell to 1 so it outlines the cell.
         for(int[] coord : posMoves) {

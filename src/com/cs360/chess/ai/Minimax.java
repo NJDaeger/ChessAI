@@ -6,6 +6,7 @@ import javafx.scene.Node;
 import org.apache.xpath.objects.XNodeSet;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Stack;
 
 public class Minimax {
@@ -52,7 +53,7 @@ public class Minimax {
             for (int column = 0; column < 8; column++) {
                 for (int row = 0; row < 8; row++) {
                     if(pieces[column][row]!=null && pieces[column][row].isBlack()!=boardFuture.isWhiteToMove()){
-                        int[][] posMoves=pieces[column][row].computePossible(boardFuture,column,row);
+                        int[][] posMoves=pieces[column][row].computePossible(boardFuture);
                         for(int[] coord : posMoves) {
                             Board childBoard = new Board(boardFuture);//clone
                             childBoard.movePiece(column,row,coord[0],coord[1]);
