@@ -2,12 +2,8 @@ package com.cs360.chess.ai;
 
 import com.cs360.chess.Board;
 import com.cs360.chess.piece.Piece;
-import javafx.scene.Node;
-import org.apache.xpath.objects.XNodeSet;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Stack;
 
 public class Minimax {
     private boolean isWhite = false;
@@ -49,7 +45,23 @@ public class Minimax {
          * generates and populates the children nodes
          */
         public void calculateChildren(int depth){
-            Piece[][] pieces = boardFuture.getBoard();
+
+            for (Piece piece : boardFuture.getPieces()) {
+                if (piece != null && piece.isBlack() != boardFuture.isWhiteToMove()) {
+                    int[][] possible = piece.computePossible(boardFuture);
+                    for (int[] coord : possible) {
+                        Board childBoard = new Board(boardFuture);//clone
+                        childBoard.movePiece(piece.getColumn(),piece.getRow(),coord[0],coord[1]);
+                        Node childNode = new Node(this,boardFuture);
+                        if(depth>1){
+                            childNode.calculateChildren(depth-1);
+                        }
+                        children.add(childNode);
+                    }
+                }
+            }
+
+            /*Piece[][] pieces = boardFuture.getPieces();
             for (int column = 0; column < 8; column++) {
                 for (int row = 0; row < 8; row++) {
                     if(pieces[column][row]!=null && pieces[column][row].isBlack()!=boardFuture.isWhiteToMove()){
@@ -65,7 +77,7 @@ public class Minimax {
                         }
                     }
                 }
-            }
+            }*/
         }
     }
 }

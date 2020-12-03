@@ -146,16 +146,15 @@ public class GUI extends Application {
     //updates the GUI
     void update(Board board){
         pieceGrid.getChildren().clear();
-        Piece[][] tempBoard = board.getBoard();
 
         for(int column=0;column<8;column++){
             for(int row=0;row<8;row++){
 
                 //We iterate through the board and find spaces where a piece exists.
-                if(tempBoard[column][row]!=null){
+                if(board.isPieceAt(column, row)){
 
                     //We get the SVG icon of the given piece and load it in an ImageView node.
-                    ImageView img = new ImageView(IconMap.getIcon(tempBoard[column][row])/*, tempBoard[column][row], column, row*/);
+                    ImageView img = new ImageView(IconMap.getIcon(board.getPieceAt(column, row))/*, tempBoard[column][row], column, row*/);
 
                     //Setting the bindings and adding the tile
                     img.fitWidthProperty().bind(size);
