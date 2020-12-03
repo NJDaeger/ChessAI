@@ -1,7 +1,6 @@
 package com.cs360.chess;
 
-import com.cs360.chess.ai.Minimax;
-
+import com.cs360.chess.ai.*;
 import java.io.Serializable;
 import java.util.Stack;
 
@@ -13,7 +12,7 @@ import java.util.Stack;
  */
 public class Game implements Serializable {
 
-    private int depth;//refactor, is apart of minMax
+    private int depth =3;
     private Board currentBoard;
     private Minimax currentTree;
     private Stack<Board> undoStack;
@@ -43,15 +42,6 @@ public class Game implements Serializable {
         this.selected = piece;
     }
 
-    //needs refactoring
-//    public boolean isAiTurn() {
-//        return aiTurn;
-//    }
-//
-//    public void toggleAiTurn() {
-//        aiTurn = !aiTurn;
-//    }
-
     public void setDepth(int depth) {
         this.depth = depth;
     }//refactor
@@ -76,6 +66,10 @@ public class Game implements Serializable {
         undoStack.push(currentBoard);
         this.currentBoard = nextMove;
         return undoStack.peek();
+    }
+    public void turn(int column, int row, int newColumn, int newRow){
+        currentBoard.movePiece(column,row,newColumn,newRow);
+        currentTree = new Minimax(currentBoard,depth);
     }
 
 }

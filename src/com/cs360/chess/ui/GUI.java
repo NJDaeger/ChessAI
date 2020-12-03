@@ -190,7 +190,7 @@ public class GUI extends Application {
         if (location != null) {
             Piece piece = currentGame.getCurrentBoard().getPieceAt(location[0], location[1]);
             if (isValidSpot(piece.computePossible(currentGame.getCurrentBoard(), location[0], location[1]), column, row) && (piece.isBlack()!=currentGame.getCurrentBoard().isWhiteToMove())) {
-                currentGame.getCurrentBoard().movePiece(location[0], location[1], column, row);
+                currentGame.turn(location[0], location[1], column, row);
                 update(currentGame.getCurrentBoard());
                 currentGame.setSelectedLocation(null);
                 return;

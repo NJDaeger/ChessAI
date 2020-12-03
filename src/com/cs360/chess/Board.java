@@ -50,10 +50,11 @@ public class Board {
      */
     public Board(Board parent) {
         this.board = new Piece[8][8];
+        this.whiteToMove = parent.whiteToMove;
         //Just using 8 since the board wont change size
         for (int column = 0; column < 8; column++) {
             System.arraycopy(parent.board[column], 0, board[column], 0, 8);
-        }
+}
     }
 
     /**
