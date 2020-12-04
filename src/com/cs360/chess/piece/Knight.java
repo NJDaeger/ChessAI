@@ -3,14 +3,21 @@ package com.cs360.chess.piece;
 import com.cs360.chess.Board;
 
 public final class Knight extends Piece {
-    
+
+    private static final int points = 3;
+
     public Knight(boolean isBlack, int column, int row) {
-        super(isBlack, 3, column, row);
+        super(isBlack, column, row);
     }
 
     @Override
     public Knight clone() {
         return new Knight(isBlack(), getColumn(), getRow());
+    }
+
+    @Override
+    public int getPoints() {
+        return points;
     }
 
     // L L L L L L L L L

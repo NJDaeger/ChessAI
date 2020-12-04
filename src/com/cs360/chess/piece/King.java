@@ -3,13 +3,21 @@ package com.cs360.chess.piece;
 import com.cs360.chess.Board;
 
 public final class King extends Piece {
+
+    private static final int points = 1000;
+
     public King(boolean isBlack, int column, int row) {
-        super(isBlack, 1000, column, row);
+        super(isBlack, column, row);
     }
 
     @Override
     public King clone() {
         return new King(isBlack(), getColumn(), getRow());
+    }
+
+    @Override
+    public int getPoints() {
+        return points;
     }
 
     //all directions, max of 1 space at a time

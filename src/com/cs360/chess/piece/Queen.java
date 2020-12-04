@@ -3,14 +3,21 @@ package com.cs360.chess.piece;
 import com.cs360.chess.Board;
 
 public final class Queen extends Piece {
-    
+
+    private static final int points = 9;
+
     public Queen(boolean isBlack, int column, int row) {
-        super(isBlack, 9, column, row);
+        super(isBlack, column, row);
     }
 
     @Override
     public Piece clone() {
         return new Queen(isBlack(), getColumn(), getRow());
+    }
+
+    @Override
+    public int getPoints() {
+        return points;
     }
 
     //can move in any (forward, backward, left, right, diagonal) direction at any distance as long as the path is clear

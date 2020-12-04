@@ -4,13 +4,20 @@ import com.cs360.chess.Board;
 
 public final class Pawn extends Piece {
 
+    private static final int points = 1;
+
     public Pawn(boolean isBlack, int column, int row) {
-        super(isBlack, 1, column, row);
+        super(isBlack, column, row);
     }
 
     @Override
     public Pawn clone() {
         return new Pawn(isBlack(), getColumn(), getRow());
+    }
+
+    @Override
+    public int getPoints() {
+        return points;
     }
 
     //2 spaces forward first shot if clear

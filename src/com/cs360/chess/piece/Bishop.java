@@ -4,13 +4,20 @@ import com.cs360.chess.Board;
 
 public final class Bishop extends Piece {
 
+    private static final int points = 3;
+
     public Bishop(boolean isBlack, int column, int row) {
-        super(isBlack, 3, column, row);
+        super(isBlack, column, row);
     }
 
     @Override
     public Bishop clone() {
         return new Bishop(isBlack(), getColumn(), getRow());
+    }
+
+    @Override
+    public int getPoints() {
+        return points;
     }
 
     @Override
