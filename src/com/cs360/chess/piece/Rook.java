@@ -5,7 +5,7 @@ import com.cs360.chess.Board;
 public final class Rook extends Piece {
 
     public Rook(boolean isBlack, int column, int row) {
-        super(1, isBlack, 5, column, row);
+        super(isBlack, 5, column, row);
     }
 
     @Override
@@ -18,4 +18,10 @@ public final class Rook extends Piece {
     public int[][] computePossible(Board board) {
         return straightMoves(board, this);
     }
+
+    @Override
+    public String toString() {
+        return "Rook[black=" + isBlack() + ",col=" + getColumn() + ",row=" + getRow() + "]";
+    }
+
 }

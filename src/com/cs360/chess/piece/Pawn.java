@@ -5,7 +5,7 @@ import com.cs360.chess.Board;
 public final class Pawn extends Piece {
 
     public Pawn(boolean isBlack, int column, int row) {
-        super(0, isBlack, 1, column, row);
+        super(isBlack, 1, column, row);
     }
 
     @Override
@@ -21,28 +21,28 @@ public final class Pawn extends Piece {
         int direction = isBlack() ? 1 : -1;
         int[][] moves = new int[4][2];
         int index = 0;
-    
+
         //No attack (move forward 1 space)
-        if (board.isInBounds(column, row + direction) && !board.isPieceAt(column, row + direction)) {
-            moves[index] = new int[]{column, row + direction};
+        if (board.isInBounds(getColumn(), getRow() + direction) && !board.isPieceAt(getColumn(), getRow() + direction)) {
+            moves[index] = new int[]{getColumn(), getRow() + direction};
             index++;
         }
         
         //attack left (diagonal)
-        if (board.isInBounds(column - 1, row + direction) && board.isPieceAt(column - 1, row + direction) && (board.getPieceAt(column - 1, row + direction).isBlack() != isBlack())) {
-            moves[index] = new int[]{column - 1, row + direction}; //attack left
+        if (board.isInBounds(getColumn() - 1, getRow() + direction) && board.isPieceAt(getColumn() - 1, getRow() + direction) && (board.getPieceAt(getColumn() - 1, getRow() + direction).isBlack() != isBlack())) {
+            moves[index] = new int[]{getColumn() - 1, getRow() + direction}; //attack left
             index++;
         }
         
         //attack right (diagonal)
-        if (board.isInBounds(column + 1, row + direction) && board.isPieceAt(column + 1, row + direction) && (board.getPieceAt(column + 1, row + direction).isBlack() != isBlack())) {
-            moves[index] = new int[]{column + 1, row + direction}; //attack right
+        if (board.isInBounds(getColumn() + 1, getRow() + direction) && board.isPieceAt(getColumn() + 1, getRow() + direction) && (board.getPieceAt(getColumn() + 1, getRow() + direction).isBlack() != isBlack())) {
+            moves[index] = new int[]{getColumn() + 1, getRow() + direction}; //attack right
             index++;
         }
         
         //No attack, move forward 2 spaces if the piece has not moved ever
-        if (!hasMoved() && board.isInBounds(column, row + (2 * direction)) && !board.isPieceAt(column, row + (2 * direction))) {
-            moves[index] = new int[]{column, row + (2 * direction)};
+        if (!hasMoved() && board.isInBounds(getColumn(), getRow() + (2 * direction)) && !board.isPieceAt(getColumn(), getRow() + (2 * direction))) {
+            moves[index] = new int[]{getColumn(), getRow() + (2 * direction)};
             index++;
         }
 
@@ -50,4 +50,10 @@ public final class Pawn extends Piece {
         System.arraycopy(moves, 0, trimmedMoves, 0, index);
         return trimmedMoves;
     }
+
+    @Override
+    public String toString() {
+        return "Pawn[black=" + isBlack() + ",col=" + getColumn() + ",row=" + getRow() + "]";
+    }
+
 }

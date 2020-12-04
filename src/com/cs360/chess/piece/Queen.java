@@ -5,7 +5,7 @@ import com.cs360.chess.Board;
 public final class Queen extends Piece {
     
     public Queen(boolean isBlack, int column, int row) {
-        super(5, isBlack, 9, column, row);
+        super(isBlack, 9, column, row);
     }
 
     @Override
@@ -23,4 +23,10 @@ public final class Queen extends Piece {
         System.arraycopy(plusPattern, 0, moves, xPattern.length, plusPattern.length);
         return moves;
     }
+
+    @Override
+    public String toString() {
+        return "Queen[black=" + isBlack() + ",col=" + getColumn() + ",row=" + getRow() + "]";
+    }
+
 }

@@ -5,7 +5,7 @@ import com.cs360.chess.Board;
 public final class Bishop extends Piece {
 
     public Bishop(boolean isBlack, int column, int row) {
-        super(3, isBlack, 3, column, row);
+        super(isBlack, 3, column, row);
     }
 
     @Override
@@ -16,5 +16,10 @@ public final class Bishop extends Piece {
     @Override
     public int[][] computePossible(Board board) {
         return diagonalMoves(board, this);
+    }
+
+    @Override
+    public String toString() {
+        return "Bishop[black=" + isBlack() + ",col=" + getColumn() + ",row=" + getRow() + "]";
     }
 }

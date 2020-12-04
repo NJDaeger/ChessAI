@@ -4,7 +4,7 @@ import com.cs360.chess.Board;
 
 public final class King extends Piece {
     public King(boolean isBlack, int column, int row) {
-        super(4, isBlack, 1000, column, row);
+        super(isBlack, 1000, column, row);
     }
 
     @Override
@@ -28,66 +28,66 @@ public final class King extends Piece {
          */
 
         //Spot A
-        if (board.isInBounds(column + 1, row - 1)) {
+        if (board.isInBounds(getColumn() + 1, getRow() - 1)) {
             //If the spot is empty or if the piece at the given spot is the opposite color, we can go there.
-            if (!board.isPieceAt(column + 1, row - 1) || board.getPieceAt(column + 1, row - 1).isBlack() != isBlack()) {
-                moves[index] = new int[]{column + 1, row - 1};
+            if (!board.isPieceAt(getColumn() + 1, getRow() - 1) || board.getPieceAt(getColumn() + 1, getRow() - 1).isBlack() != isBlack()) {
+                moves[index] = new int[]{getColumn() + 1, getRow() - 1};
                 index++;
             }
         }
 
         //Spot B
-        if (board.isInBounds(column + 1, row)) {
-            if (!board.isPieceAt(column + 1, row) || board.getPieceAt(column + 1, row).isBlack() != isBlack()) {
-                moves[index] = new int[]{column + 1, row};
+        if (board.isInBounds(getColumn() + 1, getRow())) {
+            if (!board.isPieceAt(getColumn() + 1, getRow()) || board.getPieceAt(getColumn() + 1, getRow()).isBlack() != isBlack()) {
+                moves[index] = new int[]{getColumn() + 1, getRow()};
                 index++;
             }
         }
 
         //Spot C
-        if (board.isInBounds(column + 1, row + 1)) {
-            if (!board.isPieceAt(column + 1, row + 1) || board.getPieceAt(column + 1, row + 1).isBlack() != isBlack()) {
-                moves[index] = new int[]{column + 1, row + 1};
+        if (board.isInBounds(getColumn() + 1, getRow() + 1)) {
+            if (!board.isPieceAt(getColumn() + 1, getRow() + 1) || board.getPieceAt(getColumn() + 1, getRow() + 1).isBlack() != isBlack()) {
+                moves[index] = new int[]{getColumn() + 1, getRow() + 1};
                 index++;
             }
         }
 
         //Spot D
-        if (board.isInBounds(column, row + 1)) {
-            if (!board.isPieceAt(column, row + 1) || board.getPieceAt(column, row + 1).isBlack() != isBlack()) {
-                moves[index] = new int[]{column, row + 1};
+        if (board.isInBounds(getColumn(), getRow() + 1)) {
+            if (!board.isPieceAt(getColumn(), getRow() + 1) || board.getPieceAt(getColumn(), getRow() + 1).isBlack() != isBlack()) {
+                moves[index] = new int[]{getColumn(), getRow() + 1};
                 index++;
             }
         }
 
         //Spot E
-        if (board.isInBounds(column - 1, row + 1)) {
-            if (!board.isPieceAt(column - 1, row + 1) || board.getPieceAt(column - 1, row + 1).isBlack() != isBlack()) {
-                moves[index] = new int[]{column - 1, row + 1};
+        if (board.isInBounds(getColumn() - 1, getRow() + 1)) {
+            if (!board.isPieceAt(getColumn() - 1, getRow() + 1) || board.getPieceAt(getColumn() - 1, getRow() + 1).isBlack() != isBlack()) {
+                moves[index] = new int[]{getColumn() - 1, getRow() + 1};
                 index++;
             }
         }
 
         //Spot F
-        if (board.isInBounds(column - 1, row)) {
-            if (!board.isPieceAt(column - 1, row) || board.getPieceAt(column - 1, row).isBlack() != isBlack()) {
-                moves[index] = new int[]{column - 1, row};
+        if (board.isInBounds(getColumn() - 1, getRow())) {
+            if (!board.isPieceAt(getColumn() - 1, getRow()) || board.getPieceAt(getColumn() - 1, getRow()).isBlack() != isBlack()) {
+                moves[index] = new int[]{getColumn() - 1, getRow()};
                 index++;
             }
         }
 
         //Spot G
-        if (board.isInBounds(column - 1, row - 1)) {
-            if (!board.isPieceAt(column - 1, row - 1) || board.getPieceAt(column - 1, row - 1).isBlack() != isBlack()) {
-                moves[index] = new int[]{column - 1, row - 1};
+        if (board.isInBounds(getColumn() - 1, getRow() - 1)) {
+            if (!board.isPieceAt(getColumn() - 1, getRow() - 1) || board.getPieceAt(getColumn() - 1, getRow() - 1).isBlack() != isBlack()) {
+                moves[index] = new int[]{getColumn() - 1, getRow() - 1};
                 index++;
             }
         }
 
         //Spot H
-        if (board.isInBounds(column, row - 1)) {
-            if (!board.isPieceAt(column, row - 1) || board.getPieceAt(column, row - 1).isBlack() != isBlack()) {
-                moves[index] = new int[]{column, row - 1};
+        if (board.isInBounds(getColumn(), getRow() - 1)) {
+            if (!board.isPieceAt(getColumn(), getRow() - 1) || board.getPieceAt(getColumn(), getRow() - 1).isBlack() != isBlack()) {
+                moves[index] = new int[]{getColumn(), getRow() - 1};
                 index++;
             }
         }
@@ -96,4 +96,10 @@ public final class King extends Piece {
         System.arraycopy(moves, 0, trimmedMoves, 0, index);
         return trimmedMoves;
     }
+
+    @Override
+    public String toString() {
+        return "King[black=" + isBlack() + ",col=" + getColumn() + ",row=" + getRow() + "]";
+    }
+
 }

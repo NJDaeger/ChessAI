@@ -2,23 +2,23 @@ package com.cs360.chess.piece;
 
 import com.cs360.chess.Board;
 
-import java.util.Arrays;
-
 public abstract class Piece implements Cloneable {
 
     private final int points;
     private boolean hasMoved;
-    private final int iconId;
     private final boolean isBlack;
-    protected int column;
-    protected int row;
+
+    /*
+      Okay, so this is a very heavily packed integer in an effort to remove as many data fields as we can.
+     */
+    protected byte data;
+//    protected int column;
+//    protected int row;
     
-    public Piece(int iconId, boolean isBlack, int points, int column, int row) {
-        this.iconId = iconId;
+    public Piece(boolean isBlack, int points, int column, int row) {
         this.isBlack = isBlack;
         this.points = points;
-        this.column = column;
-        this.row = row;
+        this.data = (byte)(column << 4 | row);
     }
 
     @Override
@@ -38,10 +38,6 @@ public abstract class Piece implements Cloneable {
 
     public boolean isBlack() {
         return isBlack;
-    }
-    
-    public int getIconId() {
-        return iconId;
     }
 
     /**
@@ -200,18 +196,18 @@ public abstract class Piece implements Cloneable {
     }
 
     public int getColumn() {
-        return column;
+        return (data >> 4) & 0xF;
     }
 
     public void setColumn(int column) {
-        this.column = column;
+        this.data = (byte)(column << 4 | getRow());
     }
 
     public int getRow() {
-        return row;
+        return data & 0xF;
     }
 
     public void setRow(int row) {
-        this.row = row;
+        this.data = (byte)(getColumn() << 4 | row);
     }
 }

@@ -12,7 +12,7 @@ import java.util.Stack;
  */
 public class Game implements Serializable {
 
-    private int depth =4;
+    private int depth = 5;
     private Board currentBoard;
     private Minimax currentTree;
     private Stack<Board> undoStack;
@@ -27,6 +27,8 @@ public class Game implements Serializable {
         //The last move we just undid
         this.redoStack = new Stack<>();
         this.currentBoard = new Board();
+
+
         this.currentTree = new Minimax(currentBoard, depth);
     }
 
@@ -66,6 +68,10 @@ public class Game implements Serializable {
         undoStack.push(currentBoard);
         this.currentBoard = nextMove;
         return undoStack.peek();
+    }
+
+    public void close() {
+        currentTree.shutdownThreads();
     }
 
     public void turn(int column, int row, int newColumn, int newRow){

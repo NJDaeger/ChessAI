@@ -41,6 +41,10 @@ public class Board {
         pieces[29] = new Bishop(false, 5, 7);
         pieces[30] = new Knight(false, 6, 7);
         pieces[31] = new Rook(false, 7, 7);
+
+        for (Piece piece : pieces) {
+            System.out.println(piece);
+        }
     }
     
     /**
