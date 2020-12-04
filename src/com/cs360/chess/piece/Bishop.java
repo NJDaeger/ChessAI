@@ -20,6 +20,6 @@ public final class Bishop extends Piece {
 
     @Override
     public String toString() {
-        return "Bishop[black=" + isBlack() + ",col=" + getColumn() + ",row=" + getRow() + "]";
+        return "Bishop[black=" + isBlack() + ",points=" + getPoints() + ",moved=" + hasMoved() + ",col=" + getColumn() + ",row=" + getRow() + ",BINARY=" + Integer.toBinaryString(data) + "]";
     }
 }

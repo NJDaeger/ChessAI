@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 public class Minimax {
 
-    private final int threads = 8;
+    private final int threads = 16;
     private boolean isWhite = false;
     private Node root;
     private int depth;

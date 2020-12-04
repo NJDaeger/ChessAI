@@ -103,7 +103,7 @@ public final class Knight extends Piece {
 
     @Override
     public String toString() {
-        return "Knight[black=" + isBlack() + ",col=" + getColumn() + ",row=" + getRow() + "]";
+        return "Knight[black=" + isBlack() + ",points=" + getPoints() + ",moved=" + hasMoved() + ",col=" + getColumn() + ",row=" + getRow() + ",BINARY=" + Integer.toBinaryString(data) + "]";
     }
 
 }

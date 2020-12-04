@@ -21,7 +21,7 @@ public final class Rook extends Piece {
 
     @Override
     public String toString() {
-        return "Rook[black=" + isBlack() + ",col=" + getColumn() + ",row=" + getRow() + "]";
+        return "Rook[black=" + isBlack() + ",points=" + getPoints() + ",moved=" + hasMoved() + ",col=" + getColumn() + ",row=" + getRow() + ",BINARY=" + Integer.toBinaryString(data) + "]";
     }
 
 }

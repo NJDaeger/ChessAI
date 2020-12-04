@@ -99,7 +99,7 @@ public final class King extends Piece {
 
     @Override
     public String toString() {
-        return "King[black=" + isBlack() + ",col=" + getColumn() + ",row=" + getRow() + "]";
+        return "King[black=" + isBlack() + ",points=" + getPoints() + ",moved=" + hasMoved() + ",col=" + getColumn() + ",row=" + getRow() + ",BINARY=" + Integer.toBinaryString(data) + "]";
     }
 
 }

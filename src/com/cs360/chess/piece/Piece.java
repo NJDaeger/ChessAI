@@ -4,40 +4,60 @@ import com.cs360.chess.Board;
 
 public abstract class Piece implements Cloneable {
 
-    private final int points;
-    private boolean hasMoved;
-    private final boolean isBlack;
-
     /*
       Okay, so this is a very heavily packed integer in an effort to remove as many data fields as we can.
      */
-    protected byte data;
-//    protected int column;
-//    protected int row;
+    protected int data;
     
     public Piece(boolean isBlack, int points, int column, int row) {
-        this.isBlack = isBlack;
-        this.points = points;
-        this.data = (byte)(column << 4 | row);
+        /*
+        This is packed as follows: 0000 0000 0000 0000 0000
+
+        GOING FROM LEFT TO RIGHT...
+
+        The color of the current piece. 1 being black 0 being white
+        The next is how many points the current piece is worth
+        The next is whether the piece has moved or not. 1 being yes, 0 being no
+        The next is the column of the current piece
+        And last is the row of the current piece.
+
+         */
+        this.data = (isBlack ? 1 : 0) << 24 | points << 12 | column << 4 | row;
     }
 
     @Override
     public abstract Piece clone();
 
-    public void setHasMoved(boolean moved) {
-        this.hasMoved = moved;
+    public boolean isBlack() {
+        return ((data >> 24) & 0xF) == 1;
     }
 
     public int getPoints() {
-        return points;
+        return (data >> 12) & 0xFFF;
     }
 
     public boolean hasMoved() {
-        return hasMoved;
+        return ((data >> 8) & 0xF) == 1;
     }
 
-    public boolean isBlack() {
-        return isBlack;
+    public void setHasMoved(boolean moved) {
+        this.data = (isBlack() ? 1 : 0) << 24 | getPoints() << 12 | (moved ? 1 : 0) << 8 | getColumn() << 4 | getRow();
+    }
+
+    public int getColumn() {
+        return (data >> 4) & 0xF;
+    }
+
+    public void setColumn(int column) {
+        this.data = (isBlack() ? 1 : 0) << 24 | getPoints() << 12 | (hasMoved() ? 1 : 0) << 8 | column << 4 | getRow();
+    }
+
+    public int getRow() {
+        return data & 0xF;
+    }
+
+    public void setRow(int row) {
+        this.data = (isBlack() ? 1 : 0) << 24 | getPoints() << 12 | (hasMoved() ? 1 : 0) << 8 | getColumn() << 4 | row;
     }
 
     /**
@@ -193,21 +213,5 @@ public abstract class Piece implements Cloneable {
         System.arraycopy(moves, 0, trimmedMoves, 0, index);
         return trimmedMoves;
 
-    }
-
-    public int getColumn() {
-        return (data >> 4) & 0xF;
-    }
-
-    public void setColumn(int column) {
-        this.data = (byte)(column << 4 | getRow());
-    }
-
-    public int getRow() {
-        return data & 0xF;
-    }
-
-    public void setRow(int row) {
-        this.data = (byte)(getColumn() << 4 | row);
     }
 }

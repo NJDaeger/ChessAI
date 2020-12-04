@@ -53,7 +53,7 @@ public final class Pawn extends Piece {
 
     @Override
     public String toString() {
-        return "Pawn[black=" + isBlack() + ",col=" + getColumn() + ",row=" + getRow() + "]";
+        return "Pawn[black=" + isBlack() + ",points=" + getPoints() + ",moved=" + hasMoved() + ",col=" + getColumn() + ",row=" + getRow() + ",BINARY=" + Integer.toBinaryString(data) + "]";
     }
 
 }

@@ -26,7 +26,7 @@ public final class Queen extends Piece {
 
     @Override
     public String toString() {
-        return "Queen[black=" + isBlack() + ",col=" + getColumn() + ",row=" + getRow() + "]";
+        return "Queen[black=" + isBlack() + ",points=" + getPoints() + ",moved=" + hasMoved() + ",col=" + getColumn() + ",row=" + getRow() + ",BINARY=" + Integer.toBinaryString(data) + "]";
     }
 
 }
