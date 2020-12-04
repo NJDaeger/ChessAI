@@ -12,7 +12,7 @@ import java.util.Stack;
  */
 public class Game implements Serializable {
 
-    private int depth =3;
+    private int depth =4;
     private Board currentBoard;
     private Minimax currentTree;
     private Stack<Board> undoStack;
@@ -27,7 +27,6 @@ public class Game implements Serializable {
         //The last move we just undid
         this.redoStack = new Stack<>();
         this.currentBoard = new Board();
-        currentTree.killTree();
         this.currentTree = new Minimax(currentBoard, depth);
     }
 
@@ -68,9 +67,11 @@ public class Game implements Serializable {
         this.currentBoard = nextMove;
         return undoStack.peek();
     }
+
     public void turn(int column, int row, int newColumn, int newRow){
         if(!currentBoard.isWhiteToMove()) {
-            currentTree = new Minimax(currentBoard, depth);
+            currentTree.killTree();
+            currentTree.recomputeTree(currentBoard);
             currentBoard.movePiece(column,row,newColumn,newRow);//replace with ai move method
         }
         else{
@@ -79,7 +80,5 @@ public class Game implements Serializable {
 
 
     }
-
-
 
 }

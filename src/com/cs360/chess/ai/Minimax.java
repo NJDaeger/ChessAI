@@ -16,15 +16,22 @@ public class Minimax {
      * @param depth How deep the minimax tree looks ahead
      */
     public Minimax(Board board, int depth) {
-        root = new Node(null,board);
-        this.depth = depth;
+        this.root = new Node(null,board);
         root.calculateChildren(depth);
+        this.depth = depth;
     }
     public void changeDepth(int x){
-        depth = x;
+        this.depth = x;
     }
-    public void killTree(){
+
+    public void killTree() {
+        root.children.clear();
         root = null;
+    }
+
+    public void recomputeTree(Board board) {
+        root = new Node(null, board);
+        root.calculateChildren(depth);
     }
 
     public Node getRoot() {
@@ -68,7 +75,7 @@ public class Minimax {
                     for (int[] coord : possible) {
                         Board childBoard = new Board(boardFuture);//clone
                         childBoard.movePiece(piece.getColumn(),piece.getRow(),coord[0],coord[1]);
-                        Node childNode = new Node(this,boardFuture);
+                        Node childNode = new Node(this,childBoard);
                         if(depth>1){
                             childNode.calculateChildren(depth-1);
                         }
