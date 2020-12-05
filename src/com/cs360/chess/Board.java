@@ -42,9 +42,9 @@ public class Board {
         pieces[30] = new Knight(false, 6, 7);
         pieces[31] = new Rook(false, 7, 7);
 
-        for (Piece piece : pieces) {
-            System.out.println(piece);
-        }
+//        for (Piece piece : pieces) {
+//            System.out.println(piece);
+//        }
     }
     
     /**
@@ -91,7 +91,6 @@ public class Board {
             }
         }
         changeTurn();
-        calcBoardScore();
     }
     public void aiMove(Board board){//for AI
 
@@ -181,20 +180,18 @@ public class Board {
     }
 
     public int calcBoardScore(){
-        Piece[] whitePieces = getWhitePieces();
-        Piece[] blackPieces = getBlackPieces();
+        Piece[] whitePieces = this.getWhitePieces();
+        Piece[] blackPieces = this.getBlackPieces();
         int whiteScore =0;
         int blackScore =0;
         for (Piece whitePiece : whitePieces) {
-            //System.out.print(whitePiece);
             whiteScore += whitePiece.getPoints();
         }
         for (Piece blackPiece : blackPieces) {
             blackScore += blackPiece.getPoints();
         }
-
-        int score = whiteScore-blackScore;
-        return boardValue;
+        System.out.println("WhiteScore: "+whiteScore+"   leafScore: "+(whiteScore-blackScore));
+        return whiteScore-blackScore;
     }
     void changeTurn(){whiteToMove=!whiteToMove;}
 

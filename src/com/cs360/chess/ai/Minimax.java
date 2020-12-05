@@ -94,7 +94,6 @@ public class Minimax {
             for (Node node : nodes) {
                 node.calculateChildren(depth - 1);
             }
-            System.out.println("finished");
             return nodes;
         }
     }
@@ -125,6 +124,11 @@ public class Minimax {
                         Node childNode = new Node(this,childBoard);
                         if(depth>1){
                             childNode.calculateChildren(depth-1);
+                        }
+                        else{
+
+                            childNode.nodeBoard.calcBoardScore();
+
                         }
                         children.add(childNode);
                     }
