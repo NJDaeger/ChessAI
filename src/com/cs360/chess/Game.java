@@ -12,7 +12,7 @@ import java.util.Stack;
  */
 public class Game implements Serializable {
 
-    private int depth = 5;
+    private int depth = 3;
     private Board currentBoard;
     private Minimax currentTree;
     private Stack<Board> undoStack;

@@ -17,6 +17,10 @@ public class TitleView extends Application {
     private Button loadButton;
     private Button exitButton;
 
+    public static void main(String[] args) {
+        launch(args);
+    }
+
     @Override
     public void start(Stage stage) throws Exception {
         playButton = new Button("Play Game");
@@ -30,7 +34,7 @@ public class TitleView extends Application {
         stage.setWidth(600);
         stage.setTitle("Chess AI");
         Scene titleScene = new Scene(titleBorderPane);
-        titleScene.getStylesheets().add(this.getClass().getResource("StyleSheet.css").toExternalForm());
+        titleScene.getStylesheets().add(this.getClass().getResource("/StyleSheet.css").toExternalForm());
         playButton.getStyleClass().add("titleButton");
         loadButton.getStyleClass().add("titleButton");
         exitButton.getStyleClass().add("titleButton");
