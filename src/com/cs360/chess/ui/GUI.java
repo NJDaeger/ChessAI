@@ -91,7 +91,6 @@ public class GUI extends Application {
         //Adding the menubar to the borderpane.
         difficulty.getItems().addAll(easy,normal,hard,master);
         game.getItems().addAll(save,flipBoard,restart,quit);
-        difficulty.getItems().addAll(easy,normal,hard,master);
         menuBar.getMenus().addAll(game,difficulty,exit);
 
         borderPane = new BorderPane();
