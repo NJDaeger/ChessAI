@@ -92,9 +92,7 @@ public class Board {
         }
         changeTurn();
     }
-    public void aiMove(Board board){//for AI
 
-    }
 
     /**
      * Get a piece at a specific location on the board.
@@ -190,7 +188,7 @@ public class Board {
         for (Piece blackPiece : blackPieces) {
             blackScore += blackPiece.getPoints();
         }
-        System.out.println("WhiteScore: "+whiteScore+"   leafScore: "+(whiteScore-blackScore));
+        //System.out.println("Turn: "+whiteToMove+"WhiteScore: "+whiteScore+"   leafScore: "+(whiteScore-blackScore));
         return whiteScore-blackScore;
     }
     void changeTurn(){whiteToMove=!whiteToMove;}
