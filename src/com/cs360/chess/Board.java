@@ -191,6 +191,7 @@ public class Board {
         //System.out.println("Turn: "+whiteToMove+"WhiteScore: "+whiteScore+"   leafScore: "+(whiteScore-blackScore));
         return whiteScore-blackScore;
     }
+
     void changeTurn(){whiteToMove=!whiteToMove;}
 
 }

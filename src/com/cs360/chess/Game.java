@@ -12,7 +12,7 @@ import java.util.Stack;
  */
 public class Game implements Serializable {
 
-    private int depth = 6;
+    private int depth=5;
     private Board currentBoard;
     private Minimax currentTree;
     private Stack<Board> undoStack;
@@ -27,7 +27,9 @@ public class Game implements Serializable {
         //The last move we just undid
         this.redoStack = new Stack<>();
         this.currentBoard = new Board();
-//        this.currentTree = new Minimax(currentBoard, depth);
+
+
+        this.currentTree = new Minimax(currentBoard, depth);
     }
 
     public Board getCurrentBoard() {
@@ -69,13 +71,23 @@ public class Game implements Serializable {
     }
 
     public void close() {
-        if (currentTree != null) currentTree.shutdownThreads();
+        currentTree.shutdownThreads();
     }
 
+    public void turn(int column, int row, int newColumn, int newRow){
+        currentBoard.movePiece(column,row,newColumn,newRow);
+//        if(!currentBoard.isWhiteToMove()) {
+//            currentBoard.movePiece(column,row,newColumn,newRow);//replace with ai move method
+//            currentTree.killTree();
+//            currentTree.recomputeTree(currentBoard);
+//        }
+        //else{
+    }
     public void aiTurn(){
-        if (currentTree == null) currentTree = new Minimax(currentBoard, depth);
-        else currentTree.newRoot(currentBoard);
-        currentBoard = currentTree.bestMove();
+        Minimax ai = new Minimax(currentBoard,depth);
+        Board temp = ai.bestMove();
+        temp.whiteToMove=!currentBoard.isWhiteToMove();
+        currentBoard = new Board(temp);
     }
 
 }

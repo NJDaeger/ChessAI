@@ -4,7 +4,7 @@ import com.cs360.chess.Board;
 
 public final class King extends Piece {
 
-    private static final int points = 1000;
+    private static final int points = 2000;
 
     public King(boolean isBlack, int column, int row) {
         super(isBlack, column, row);
