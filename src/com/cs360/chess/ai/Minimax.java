@@ -33,10 +33,10 @@ public class Minimax {
         if(depth == 0){
             return board.calcBoardScore();
         }
-        if(board.isWhiteToMove()){
+        if (depth != this.depth) node.calculateChildren(); //We only want to calculate children if we are NOT the root node. (the roots children is calculated in bestMove())
 
+        if(board.isWhiteToMove()) {
             int maxScore = -2000;
-            node.calculateChildren();
             for(Node child: node.children){
                 child.score = minmax(child, depth-1, alpha, beta);
                 maxScore = Math.max(maxScore, child.score);
@@ -45,10 +45,8 @@ public class Minimax {
             }
             //if AI white, move white here
             return maxScore;
-        }
-        else{
+        } else{
             int minScore = 2000;
-            node.calculateChildren();
             for(Node child: node.children){
                 child.score = minmax(child, depth-1, alpha, beta);
                 minScore = Math.min(minScore, child.score);
@@ -65,8 +63,33 @@ public class Minimax {
      */
     public Board bestMove(){
         root.calculateChildren();
+        System.out.println("root has: " + root.children.size() + " children");
 
-        minmax(root, depth, -2000, 2000);
+        int remainder = root.children.size() % threads;
+        int totalOffset = 0;
+        int perThread = 1;
+
+        List<Future<List<Node>>> futures = new ArrayList<>();
+        if (root.children.size() > threads) perThread = (root.children.size() - remainder) / threads; //This is the number of nodes we need per thread to split equally;
+        for (int i = 0; i < threads; i++) {
+            //We are splitting the children into chunks for the threads
+            if (remainder > totalOffset) totalOffset++;
+            List<Node> children = root.children.stream().skip(perThread*i + totalOffset).limit(perThread + (remainder > totalOffset ? 1 : 0)).collect(Collectors.toList());
+            System.out.println(i + " skipped:" + (perThread*i + totalOffset-1) + " computed: " + (perThread + (remainder > totalOffset ? 1 : 0)));
+//            List<Node> children = root.children.stream().skip(threads*i + (remainder-- > 0 ? ++offset : 0)).limit((root.children.size()-root.children.size() % threads)/threads + (remainder > 0 ? 1 : 0)).collect(Collectors.toList());
+            futures.add(executor.submit(new ComputeThread(children)));
+        }
+        //I clear the children and then add all the children from the futures (its the same children, but just computed this time)
+        root.children.clear();
+        futures.forEach(f -> {
+            try {
+                root.children.addAll(f.get());
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+        });
+        futures.clear();
+//        minmax(root, depth, -2000, 2000);
 
 
         if(!root.nodeBoard.isWhiteToMove()) {
@@ -160,9 +183,12 @@ public class Minimax {
 
         @Override
         public List<Node> call() {
+            long start = System.currentTimeMillis();
             for (Node node : nodes) {
+                minmax(node, depth - 1, -2000, 2000);
                 //node.calculateChildren(depth - 1);
             }
+            System.out.println("finished " + nodes.size() + " nodes in " + (System.currentTimeMillis()-start) + "ms");
             return nodes;
         }
     }
