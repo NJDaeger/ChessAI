@@ -10,6 +10,10 @@ public abstract class Piece implements Cloneable {
     protected int data;
     
     public Piece(boolean isBlack, int column, int row) {
+        this(isBlack, false, column, row);
+    }
+
+    public Piece(boolean isBlack, boolean hasMoved, int column, int row) {
         /*
         This is packed as follows: 0000 0000 0000 0000
 
@@ -21,8 +25,9 @@ public abstract class Piece implements Cloneable {
         And last is the row of the current piece.
 
          */
-        this.data = (isBlack ? 1 : 0) << 12 | column << 4 | row;
+        this.data = (isBlack ? 1 : 0) << 12 | (hasMoved ? 1 : 0) << 8 | column << 4 | row;
     }
+
 
     @Override
     public abstract Piece clone();

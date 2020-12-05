@@ -10,9 +10,13 @@ public final class Bishop extends Piece {
         super(isBlack, column, row);
     }
 
+    public Bishop(boolean black, boolean hasMoved, int column, int row) {
+        super(black, hasMoved, column, row);
+    }
+
     @Override
     public Bishop clone() {
-        return new Bishop(isBlack(), getColumn(), getRow());
+        return new Bishop(isBlack(), hasMoved(), getColumn(), getRow());
     }
 
     @Override

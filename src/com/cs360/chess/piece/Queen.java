@@ -10,9 +10,13 @@ public final class Queen extends Piece {
         super(isBlack, column, row);
     }
 
+    public Queen(boolean black, boolean hasMoved, int column, int row) {
+        super(black, hasMoved, column, row);
+    }
+
     @Override
     public Piece clone() {
-        return new Queen(isBlack(), getColumn(), getRow());
+        return new Queen(isBlack(), hasMoved(), getColumn(), getRow());
     }
 
     @Override

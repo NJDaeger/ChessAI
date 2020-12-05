@@ -25,6 +25,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
+import java.util.Arrays;
+
 public class GUI extends Application {
     
     public static void main(String[] args) {
@@ -189,8 +191,10 @@ public class GUI extends Application {
 
         if (location != null) {
             Piece piece = currentGame.getCurrentBoard().getPieceAt(location[0], location[1]);
+            System.out.println(piece.hasMoved());
+            System.out.println(Arrays.deepToString(piece.computePossible(currentGame.getCurrentBoard())));
             if (isValidSpot(piece.computePossible(currentGame.getCurrentBoard()), column, row) && (currentGame.getCurrentBoard().isWhiteToMove())) {
-                currentGame.turn(location[0], location[1], column, row);
+                currentGame.getCurrentBoard().movePiece(location[0], location[1], column, row);
                 update(currentGame.getCurrentBoard());
                 currentGame.setSelectedLocation(null);
                 currentGame.aiTurn();

@@ -10,9 +10,13 @@ public final class Knight extends Piece {
         super(isBlack, column, row);
     }
 
+    public Knight(boolean black, boolean hasMoved, int column, int row) {
+        super(black, hasMoved, column, row);
+    }
+
     @Override
     public Knight clone() {
-        return new Knight(isBlack(), getColumn(), getRow());
+        return new Knight(isBlack(), hasMoved(), getColumn(), getRow());
     }
 
     @Override

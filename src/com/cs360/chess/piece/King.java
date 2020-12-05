@@ -10,9 +10,13 @@ public final class King extends Piece {
         super(isBlack, column, row);
     }
 
+    public King(boolean black, boolean hasMoved, int column, int row) {
+        super(black, hasMoved, column, row);
+    }
+
     @Override
     public King clone() {
-        return new King(isBlack(), getColumn(), getRow());
+        return new King(isBlack(), hasMoved(), getColumn(), getRow());
     }
 
     @Override

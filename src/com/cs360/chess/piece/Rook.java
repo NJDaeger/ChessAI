@@ -10,9 +10,13 @@ public final class Rook extends Piece {
         super(isBlack, column, row);
     }
 
+    public Rook(boolean black, boolean hasMoved, int column, int row) {
+        super(black, hasMoved, column, row);
+    }
+
     @Override
     public Rook clone() {
-        return new Rook(isBlack(), getColumn(), getRow());
+        return new Rook(isBlack(), hasMoved(), getColumn(), getRow());
     }
 
     @Override

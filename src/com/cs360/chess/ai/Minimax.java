@@ -5,6 +5,7 @@ import com.cs360.chess.piece.Piece;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.*;
 import java.lang.*;
 import java.util.stream.Collectors;
@@ -24,14 +25,12 @@ public class Minimax {
      */
     public Minimax(Board board, int depth) {
         this.depth = depth;
-        if(board.isWhiteToMove()){
-        }
         this.root = new Node(board);
     }
 
-    public int minmax(Node node,int depth,int alpha,int beta){
+    public int minmax(Node node, int depth, int alpha, int beta){
         Board board = node.nodeBoard;
-        if(depth==0){
+        if(depth == 0){
             return board.calcBoardScore();
         }
         if(board.isWhiteToMove()){
@@ -39,10 +38,10 @@ public class Minimax {
             int maxScore = -2000;
             node.calculateChildren();
             for(Node child: node.children){
-                child.score = minmax(child,depth-1,alpha,beta);
-                maxScore = Math.max(maxScore,child.score);
-                alpha=Math.max(alpha,child.score);
-                if(beta<=alpha){break;}//pruning
+                child.score = minmax(child, depth-1, alpha, beta);
+                maxScore = Math.max(maxScore, child.score);
+                alpha = Math.max(alpha, child.score);
+                if(beta <= alpha)break;//pruning
             }
             //if AI white, move white here
             return maxScore;
@@ -51,10 +50,10 @@ public class Minimax {
             int minScore = 2000;
             node.calculateChildren();
             for(Node child: node.children){
-                child.score = minmax(child,depth-1,alpha,beta);
-                minScore = Math.min(minScore,child.score);
-                beta=Math.min(alpha,child.score);
-                if(beta<=alpha){break;}//pruning
+                child.score = minmax(child, depth-1, alpha, beta);
+                minScore = Math.min(minScore, child.score);
+                beta = Math.min(alpha, child.score);
+                if(beta <= alpha)break;//pruning
             }
             return minScore;
         }
@@ -65,9 +64,13 @@ public class Minimax {
      * @return Board that represents the AI's next best move
      */
     public Board bestMove(){
-        minmax(root,depth,-2000,2000);
-        if(!root.nodeBoard.isWhiteToMove()){
-            return  minNode(root).nodeBoard;
+        root.calculateChildren();
+
+        minmax(root, depth, -2000, 2000);
+
+
+        if(!root.nodeBoard.isWhiteToMove()) {
+            return minNode(root).nodeBoard;
         }
         else{
             //if white is to move, probably wont implement this for final submission
@@ -79,14 +82,19 @@ public class Minimax {
      *
      * @return the node with the lowest score
      */
-    Node minNode(Node parent){
-        int i;
-        Node min = parent.children.get(0);
-        for (i=1; i<parent.children.size(); i++)
-            if (parent.children.get(i).getScore() < min.getScore())
-                min = parent.children.get(i);
-
-        return min;
+    private Node minNode(Node parent){
+        List<Node> mins = new ArrayList<>();
+        int min = 0;
+        for (Node child : parent.children) {
+            if (child.getScore() <= min) {
+                if (child.getScore() < min) {
+                    mins.clear();
+                    mins.add(child);
+                    min = child.getScore();
+                } else mins.add(child);
+            }
+        }
+        return mins.get(new Random().nextInt(mins.size()));
     }
 
     public void changeDepth(int x){
@@ -94,7 +102,6 @@ public class Minimax {
     }
 
     public void shutdownThreads() {
-        killTree();
         executor.shutdownNow();
     }
 
@@ -103,9 +110,13 @@ public class Minimax {
         root = null;
     }
 
+    public void newRoot(Board board) {
+        this.root = new Node(board);
+    }
+
     public void recomputeTree(Board board) {
         root = new Node(board);
-        root.calculateChildren();
+        bestMove();
 
         //Notes for Noah
         //
@@ -158,8 +169,7 @@ public class Minimax {
 
     private class Node {
 
-        int score;
-
+        private int score;
         private final Board nodeBoard;
         private ArrayList<Node> children;
 
@@ -189,7 +199,6 @@ public class Minimax {
                         childBoard.movePiece(piece.getColumn(),piece.getRow(),coord[0],coord[1]);
                         Node childNode = new Node(childBoard);
                         children.add(childNode);
-
                     }
                 }
             }

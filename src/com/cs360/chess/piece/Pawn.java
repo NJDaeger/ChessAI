@@ -10,9 +10,13 @@ public final class Pawn extends Piece {
         super(isBlack, column, row);
     }
 
+    public Pawn(boolean black, boolean hasMoved, int column, int row) {
+        super(black, hasMoved, column, row);
+    }
+
     @Override
     public Pawn clone() {
-        return new Pawn(isBlack(), getColumn(), getRow());
+        return new Pawn(isBlack(), hasMoved(), getColumn(), getRow());
     }
 
     @Override
