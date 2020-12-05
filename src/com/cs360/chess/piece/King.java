@@ -23,6 +23,7 @@ public final class King extends Piece {
     //all directions, max of 1 space at a time
     @Override
     public int[][] computePossible(Board board) {
+        if (board.isWhiteToMove() && isBlack()) return new int[0][0];
         int[][] moves = new int[8][2];
         int index = 0;
         /*

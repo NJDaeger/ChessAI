@@ -22,6 +22,7 @@ public final class Bishop extends Piece {
 
     @Override
     public int[][] computePossible(Board board) {
+        if (board.isWhiteToMove() && isBlack()) return new int[0][0];
         return diagonalMoves(board, this);
     }
 

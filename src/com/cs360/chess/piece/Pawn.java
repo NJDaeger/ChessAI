@@ -25,6 +25,7 @@ public final class Pawn extends Piece {
     //can move diagonally 1 space (forward) only if there is a piece in the said diagonal spot
     @Override
     public int[][] computePossible(Board board) {
+        if (board.isWhiteToMove() && isBlack()) return new int[0][0];
         int direction = isBlack() ? 1 : -1;
         int[][] moves = new int[4][2];
         int index = 0;
