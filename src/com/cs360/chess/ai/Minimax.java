@@ -16,6 +16,11 @@ public class Minimax {
     private Node root;
     private int depth;
 
+
+    Boolean AIturn=false;
+    void turnFlipper(){
+        AIturn = !AIturn;
+    }
     private final ExecutorService executor = Executors.newFixedThreadPool(threads);
 
     /**
@@ -30,12 +35,12 @@ public class Minimax {
 
     public int minmax(Node node, int depth, int alpha, int beta){
         Board board = node.nodeBoard;
-        if(depth == 0){
+        if(depth == 1){
             return board.calcBoardScore();
         }
         node.calculateChildren(); //We only want to calculate children if we are NOT the root node. (the roots children is calculated in bestMove())
 
-        if(board.isWhiteToMove()) {
+        if(!AIturn) {
             int maxScore = -2000;
             for(Node child: node.children){
                 child.score = minmax(child, depth-1, alpha, beta);
@@ -48,7 +53,7 @@ public class Minimax {
         } else{
             int minScore = 2000;
             for(Node child: node.children){
-                child.score = minmax(child, depth-1, alpha, beta);
+                child.score = minmax(child, depth-1,alpha, beta);
                 minScore = Math.min(minScore, child.score);
                 beta = Math.min(beta,minScore);
                 if(beta <= alpha)break;//pruning
@@ -110,6 +115,7 @@ public class Minimax {
         List<Node> mins = new ArrayList<>();
         int min = 2000;
         for (Node child : parent.children) {
+            System.out.print(child.getScore()+" ");
             if (child.getScore() <= min) {
                 if (child.getScore() < min) {
                     mins.clear();
@@ -117,6 +123,11 @@ public class Minimax {
                     min = child.getScore();
                 } else mins.add(child);
             }
+        }
+        System.out.println();
+        for(Node temp : mins){
+            System.out.print(temp.score);
+
         }
         return mins.get(new Random().nextInt(mins.size()));
     }
