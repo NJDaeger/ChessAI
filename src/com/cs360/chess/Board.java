@@ -81,9 +81,19 @@ public class Board {
     public void movePiece(int column, int row, int newColumn, int newRow) {
         if (column > 7 || row > 7 || newColumn > 7 || newRow > 7) throw new RuntimeException("Piece out of bounds");
 
+        int index = 0;
         for (Piece piece : pieces) {
+            index++;
             if (piece != null && piece.getColumn() == column && piece.getRow() == row) {
                 clearPieceAt(newColumn, newRow);
+
+                //Handling pawn promotion here so the AI always sees it
+                if (piece instanceof Pawn && (newRow == 0 || newRow == 7)) {
+                    clearPieceAt(row, column);
+                    pieces[index] = new Queen(piece.isBlack(), true, newColumn, newRow);
+                    break;
+                }
+
                 piece.setColumn(newColumn);
                 piece.setRow(newRow);
                 piece.setHasMoved(true);

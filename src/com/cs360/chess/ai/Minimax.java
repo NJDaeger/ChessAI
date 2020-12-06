@@ -35,10 +35,12 @@ public class Minimax {
 
     public int minmax(Node node, int depth, int alpha, int beta){
         Board board = node.nodeBoard;
+
+        node.calculateChildren(); //We only want to calculate children if we are NOT the root node. (the roots children is calculated in bestMove())
+
         if(depth == 1){
             return board.calcBoardScore();
         }
-        node.calculateChildren(); //We only want to calculate children if we are NOT the root node. (the roots children is calculated in bestMove())
 
         if(!AIturn) {
             int maxScore = -2000;
