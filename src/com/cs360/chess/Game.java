@@ -78,7 +78,9 @@ public class Game implements Serializable {
 
     public void aiTurn(){
         Minimax ai = new Minimax(currentBoard,depth);
-        currentBoard = ai.bestMove();
+        Board newBoard = ai.bestMove();
+        if (newBoard == null) System.out.println("YOU WIN");
+        else currentBoard = ai.bestMove();
     }
 
 }

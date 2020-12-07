@@ -71,14 +71,17 @@ public abstract class Piece implements Cloneable {
 
     public int[][] findNonIntersecting(Board board) {
         int[][] positions = computePossible(board);
-        int[][] safe = new int[positions.length][2];
+        int[][] addedSelf = new int[positions.length + 1][2];
+        System.arraycopy(positions, 0, addedSelf, 0, positions.length);
+        addedSelf[positions.length] = new int[]{getColumn(), getRow()};
+        int[][] safe = new int[addedSelf.length][2];
         int index = 0;
         Board cloned = new Board(board);
         cloned.clearPieceAt(getColumn(), getRow());//Temporarily clear the piece from the board to allow seeing through to the other side of the piece for danger.
-        for (int[] pos : positions) {
+        for (int[] pos : addedSelf) {
             boolean safeFlag = true;
             for (Piece piece : cloned.getPieces()) {
-                if (piece != null && !(isBlack() == piece.isBlack()) && getId() != piece.getId()) {
+                if (piece != null && !(isBlack() == piece.isBlack())) {
                     int[][] potentialCollisions = piece.computePossible(board);
                     for (int[] collision : potentialCollisions) {
                         if (pos[0] == collision[0] && pos[1] == collision[1]) {

@@ -39,7 +39,7 @@ public class Minimax {
         }
 
         if(board.isWhiteToMove()) {
-            int maxScore = Integer.MIN_VALUE;
+            int maxScore = -10000;
             for(Node child: node.children){
                 child.score = minmax(child, depth-1, alpha, beta);
                 maxScore = Math.max(maxScore, child.score);
@@ -49,7 +49,7 @@ public class Minimax {
             //if AI white, move white here
             return maxScore;
         } else{
-            int minScore = Integer.MAX_VALUE;
+            int minScore = 10000;
             for(Node child: node.children){
                 child.score = minmax(child, depth-1,alpha, beta);
                 minScore = Math.min(minScore, child.score);
@@ -96,7 +96,9 @@ public class Minimax {
 //
         minmax(root, depth, -2000, 2000);
 
-        return minNode(root).nodeBoard;
+        Node node = minNode(root);
+        if (node == null) return null;
+        else return node.nodeBoard;
 
     }
 
@@ -122,6 +124,7 @@ public class Minimax {
             System.out.print(temp.score + " ");
         }
         System.out.println();
+        if (mins.size() == 0) return null;
         return mins.get(new Random().nextInt(mins.size()));
     }
 
