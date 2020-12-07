@@ -1,6 +1,7 @@
 package com.cs360.chess.ai;
 
 import com.cs360.chess.Board;
+import com.cs360.chess.piece.King;
 import com.cs360.chess.piece.Piece;
 
 import java.util.ArrayList;
@@ -37,7 +38,7 @@ public class Minimax {
             return board.calcBoardScore();
         }
 
-        if(!board.isWhiteToMove()) {
+        if(board.isWhiteToMove()) {
             int maxScore = Integer.MIN_VALUE;
             for(Node child: node.children){
                 child.score = minmax(child, depth-1, alpha, beta);
@@ -223,7 +224,7 @@ public class Minimax {
             children = new ArrayList<>();
             for (Piece piece : nodeBoard.getPieces()) {
                 if (piece != null && piece.isBlack() != nodeBoard.isWhiteToMove()) {
-                    int[][] possible = piece.computePossible(nodeBoard);
+                    int[][] possible = piece instanceof King ? piece.findNonIntersecting(nodeBoard) : piece.computePossible(nodeBoard);
                     for (int[] coord : possible) {
                         Board childBoard = new Board(nodeBoard);//clone
                         childBoard.movePiece(piece.getColumn(),piece.getRow(),coord[0],coord[1]);

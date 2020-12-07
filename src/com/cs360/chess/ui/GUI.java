@@ -3,6 +3,7 @@ package com.cs360.chess.ui;
 import com.cs360.chess.Board;
 import com.cs360.chess.Game;
 import com.cs360.chess.IconMap;
+import com.cs360.chess.piece.King;
 import com.cs360.chess.piece.Piece;
 import de.codecentric.centerdevice.javafxsvg.SvgImageLoaderFactory;
 import javafx.application.Application;
@@ -193,7 +194,8 @@ public class GUI extends Application {
         if (selection instanceof ImageView && !currentGame.getCurrentBoard().getPieceAt(column, row).isBlack()) {
             currentGame.setSelectedLocation(new int[]{column, row});
             location = currentGame.getSelectedLocation();
-            for(int[] coord : currentGame.getCurrentBoard().getPieceAt(location[0], location[1]).computePossible(currentGame.getCurrentBoard())) {
+            Piece piece = currentGame.getCurrentBoard().getPieceAt(location[0], location[1]);
+            for(int[] coord : piece instanceof King ? piece.findNonIntersecting(currentGame.getCurrentBoard()) : piece.computePossible(currentGame.getCurrentBoard())) {
                 Node cell = getCell(clickGrid, coord[0], coord[1]);
                 cell.setOpacity(1); //Ignore this check, it will not be null unless we screw up
             }
@@ -202,7 +204,7 @@ public class GUI extends Application {
 
         if (location != null) {
             Piece piece = currentGame.getCurrentBoard().getPieceAt(location[0], location[1]);
-            if (isValidSpot(piece.computePossible(currentGame.getCurrentBoard()), column, row) && (currentGame.getCurrentBoard().isWhiteToMove())) {
+            if (isValidSpot(piece instanceof King ? piece.findNonIntersecting(currentGame.getCurrentBoard()) : piece.computePossible(currentGame.getCurrentBoard()), column, row) && (currentGame.getCurrentBoard().isWhiteToMove())) {
                 currentGame.getCurrentBoard().movePiece(location[0], location[1], column, row);
                 update(currentGame.getCurrentBoard());
                 currentGame.setSelectedLocation(null);

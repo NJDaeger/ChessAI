@@ -8,9 +8,11 @@ import java.util.Arrays;
  * The grid of pieces which can be manipulated. This can represent a primary board, or a future board depending on its context.
  */
 public class Board {
-    private int boardValue =0; //the difference of white - black piece values, used for minimax.
-    private Piece[] pieces;
+
+    private final Piece[] pieces;
     boolean whiteToMove = true; //flag that controls who's turn it is
+    private int blackKing = -1; //Index of the black king
+    private int whiteKing = -1; //Index of the white king
     /**
      * Creates a new board instance with a fresh set of pieces
      */
@@ -44,6 +46,9 @@ public class Board {
         pieces[30] = new Knight(false, 6, 7);
         pieces[31] = new Rook(false, 7, 7);
 
+        blackKing = 20;
+        whiteKing = 28;
+
 //        for (Piece piece : pieces) {
 //            System.out.println(piece);
 //        }
@@ -61,6 +66,10 @@ public class Board {
         for (Piece piece : parent.pieces) {
             if (piece == null) continue;
             this.pieces[i] = piece.clone();
+            if (piece instanceof King) {
+                if (piece.isBlack()) this.blackKing = i;
+                else this.whiteKing = i;
+            }
             i++;
         }
     }
@@ -111,44 +120,12 @@ public class Board {
         this.whiteToMove = !whiteToMove;
     }
 
-    public boolean isSafe(Piece searchFor, int column, int row) {
-        for (Piece piece : pieces) {
-            if (piece != null && piece.isBlack() != searchFor.isBlack() && searchFor.getId() != piece.getId()) {
-                int[][] potentialCollisions = piece.computePossible(this);
-                for (int[] collision : potentialCollisions) {
-                    if (column == collision[0] && row == collision[1]) return false;
-                }
-            }
-        }
-        return true;
+    public boolean isBlackInCheck() {
+        return blackKing == -1 || pieces[blackKing].computePossible(this).length != 0 && pieces[blackKing].findNonIntersecting(this).length == 0;
     }
 
-    public int[][] findSafe(Piece searchFor, int[][] positions) {
-        int[][] safe = new int[positions.length][2];
-        int index = 0;
-        Board cloned = new Board(this);
-        cloned.clearPieceAt(searchFor.getColumn(), searchFor.getRow());
-        for (int[] pos : positions) {
-            boolean safeFlag = true;
-            for (Piece piece : cloned.getPieces()) {
-                if (piece != null && !(searchFor.isBlack() == piece.isBlack()) && searchFor.getId() != piece.getId()) {
-                    int[][] potentialCollisions = piece.computePossible(this);
-                    for (int[] collision : potentialCollisions) {
-                        if (pos[0] == collision[0] && pos[1] == collision[1]) {
-                            safeFlag = false;
-                            break;
-                        }
-                    }
-                }
-            }
-            if (safeFlag) {
-                safe[index] = pos;
-                index++;
-            }
-        }
-        int[][] trimmedMoves = new int[index][2];
-        System.arraycopy(safe, 0, trimmedMoves, 0, index);
-        return trimmedMoves;
+    public boolean isWhiteInCheck() {
+        return whiteKing == -1 || pieces[whiteKing].computePossible(this).length != 0 && pieces[whiteKing].findNonIntersecting(this).length == 0;
     }
 
     /**
@@ -172,6 +149,10 @@ public class Board {
     public void clearPieceAt(int column, int row) {
         for (int i = 0; i < pieces.length; i++) {
             if (pieces[i] != null && pieces[i].getColumn() == column && pieces[i].getRow() == row) {
+                if (pieces[i] instanceof King) {
+                    if (pieces[i].isBlack()) blackKing = -1;
+                    else whiteKing = -1;
+                }
                 pieces[i] = null;
                 break;
             }

@@ -69,6 +69,35 @@ public abstract class Piece implements Cloneable {
      */
     public abstract int[][] computePossible(Board board);
 
+    public int[][] findNonIntersecting(Board board) {
+        int[][] positions = computePossible(board);
+        int[][] safe = new int[positions.length][2];
+        int index = 0;
+        Board cloned = new Board(board);
+        cloned.clearPieceAt(getColumn(), getRow());//Temporarily clear the piece from the board to allow seeing through to the other side of the piece for danger.
+        for (int[] pos : positions) {
+            boolean safeFlag = true;
+            for (Piece piece : cloned.getPieces()) {
+                if (piece != null && !(isBlack() == piece.isBlack()) && getId() != piece.getId()) {
+                    int[][] potentialCollisions = piece.computePossible(board);
+                    for (int[] collision : potentialCollisions) {
+                        if (pos[0] == collision[0] && pos[1] == collision[1]) {
+                            safeFlag = false;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (safeFlag) {
+                safe[index] = pos;
+                index++;
+            }
+        }
+        int[][] trimmedMoves = new int[index][2];
+        System.arraycopy(safe, 0, trimmedMoves, 0, index);
+        return trimmedMoves;
+    }
+
     protected static int[][] diagonalMoves(Board board, Piece piece) {
         int[][] moves = new int[13][2];//The most diagonal moves we can have is 13
         int index = 0;
