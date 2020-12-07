@@ -2,6 +2,8 @@ package com.cs360.chess.piece;
 
 import com.cs360.chess.Board;
 
+import java.util.Arrays;
+
 public final class King extends Piece {
 
     private static final int points = 1500;
@@ -28,7 +30,7 @@ public final class King extends Piece {
     @Override
     public int[][] computePossible(Board board) {
         if (board.isWhiteToMove() && isBlack()) return new int[0][0];
-        int[][] moves = new int[8][2];
+        int[][] moves = new int[10][2];
         int index = 0;
         /*
 
@@ -39,6 +41,19 @@ public final class King extends Piece {
           E D C
 
          */
+
+        if (!hasMoved()) {
+            Piece leftRook = board.getPieceAt(0, isBlack() ? 0 : 7);
+            Piece rightRook = board.getPieceAt(7, isBlack() ? 0 : 7);
+            if (leftRook != null && !leftRook.hasMoved() && !board.isPieceAt(1, isBlack() ? 0 : 7) && !board.isPieceAt(2, isBlack() ? 0 : 7) && !board.isPieceAt(3, isBlack() ? 0 : 7)) {
+                moves[index] = new int[]{2, isBlack() ? 0 : 7};
+                index++;
+            }
+            if (rightRook != null && !rightRook.hasMoved() && !board.isPieceAt(5, isBlack() ? 0 : 7) && !board.isPieceAt(6, isBlack() ? 0 : 7)) {
+                moves[index] = new int[]{6, isBlack() ? 0 : 7};
+                index++;
+            }
+        }
 
         //Spot A
         if (board.isInBounds(getColumn() + 1, getRow() - 1)) {

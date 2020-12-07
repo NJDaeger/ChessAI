@@ -94,6 +94,12 @@ public class Board {
                     break;
                 }
 
+                if (piece instanceof King && !piece.hasMoved() && (newColumn == column + 2 || newColumn == column - 2) && row == newRow) {
+                    Piece rook = getPieceAt(newColumn == column + 2 ? 7 : 0, row);
+                    rook.setColumn(newColumn == column + 2 ? 5 : 3);
+                    rook.setHasMoved(true);
+                }
+
                 piece.setColumn(newColumn);
                 piece.setRow(newRow);
                 piece.setHasMoved(true);

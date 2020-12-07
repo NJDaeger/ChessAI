@@ -16,11 +16,6 @@ public class Minimax {
     private Node root;
     private int depth;
 
-
-    Boolean AIturn=false;
-    void turnFlipper(){
-        AIturn = !AIturn;
-    }
     private final ExecutorService executor = Executors.newFixedThreadPool(threads);
 
     /**
@@ -42,7 +37,7 @@ public class Minimax {
             return board.calcBoardScore();
         }
 
-        if(!AIturn) {
+        if(!board.isWhiteToMove()) {
             int maxScore = -2000;
             for(Node child: node.children){
                 child.score = minmax(child, depth-1, alpha, beta);

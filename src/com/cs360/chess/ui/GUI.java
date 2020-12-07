@@ -191,8 +191,6 @@ public class GUI extends Application {
 
         if (location != null) {
             Piece piece = currentGame.getCurrentBoard().getPieceAt(location[0], location[1]);
-            System.out.println(piece.hasMoved());
-            System.out.println(Arrays.deepToString(piece.computePossible(currentGame.getCurrentBoard())));
             if (isValidSpot(piece.computePossible(currentGame.getCurrentBoard()), column, row) && (currentGame.getCurrentBoard().isWhiteToMove())) {
                 currentGame.getCurrentBoard().movePiece(location[0], location[1], column, row);
                 update(currentGame.getCurrentBoard());
@@ -202,6 +200,8 @@ public class GUI extends Application {
                 return;
             }
             else currentGame.setSelectedLocation(null);
+            System.out.println(piece);
+            System.out.println(Arrays.deepToString(piece.computePossible(currentGame.getCurrentBoard())));
         }
 
         Node selection = getCell(pieceGrid, column, row);
