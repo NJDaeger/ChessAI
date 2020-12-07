@@ -28,7 +28,6 @@ public abstract class Piece implements Cloneable {
         this.data = (isBlack ? 1 : 0) << 12 | (hasMoved ? 1 : 0) << 8 | column << 4 | row;
     }
 
-
     @Override
     public abstract Piece clone();
 
@@ -37,6 +36,8 @@ public abstract class Piece implements Cloneable {
     }
 
     public abstract int getPoints();
+
+    public abstract int getId();
 
     public boolean hasMoved() {
         return ((data >> 8) & 0xF) == 1;

@@ -12,11 +12,13 @@ import java.util.Stack;
  */
 public class Game implements Serializable {
 
-    private int depth = 4;
+    private int depth = 5;
     private Board currentBoard;
     private Minimax currentTree;
     private Stack<Board> undoStack;
     private Stack<Board> redoStack;
+
+
 
     private int[] selected;
     //todo handle minimax in this class.
@@ -76,9 +78,7 @@ public class Game implements Serializable {
 
     public void aiTurn(){
         Minimax ai = new Minimax(currentBoard,depth);
-        Board temp = ai.bestMove();
-        temp.whiteToMove=!currentBoard.isWhiteToMove();
-        currentBoard = new Board(temp);
+        currentBoard = ai.bestMove();
     }
 
 }

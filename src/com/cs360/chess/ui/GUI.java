@@ -189,6 +189,17 @@ public class GUI extends Application {
         int column = ((ClickView) event.getSource()).getColumn();
         int row = ((ClickView) event.getSource()).getRow();
 
+        Node selection = getCell(pieceGrid, column, row);
+        if (selection instanceof ImageView && !currentGame.getCurrentBoard().getPieceAt(column, row).isBlack()) {
+            currentGame.setSelectedLocation(new int[]{column, row});
+            location = currentGame.getSelectedLocation();
+            for(int[] coord : currentGame.getCurrentBoard().getPieceAt(location[0], location[1]).computePossible(currentGame.getCurrentBoard())) {
+                Node cell = getCell(clickGrid, coord[0], coord[1]);
+                cell.setOpacity(1); //Ignore this check, it will not be null unless we screw up
+            }
+            return;
+        }
+
         if (location != null) {
             Piece piece = currentGame.getCurrentBoard().getPieceAt(location[0], location[1]);
             if (isValidSpot(piece.computePossible(currentGame.getCurrentBoard()), column, row) && (currentGame.getCurrentBoard().isWhiteToMove())) {
@@ -200,27 +211,6 @@ public class GUI extends Application {
                 return;
             }
             else currentGame.setSelectedLocation(null);
-            System.out.println(piece);
-            System.out.println(Arrays.deepToString(piece.computePossible(currentGame.getCurrentBoard())));
-        }
-
-        Node selection = getCell(pieceGrid, column, row);
-        if (selection instanceof ImageView) {
-            currentGame.setSelectedLocation(new int[]{column, row});
-            location = currentGame.getSelectedLocation();
-        }
-        else {
-            currentGame.setSelectedLocation(null);
-            return;
-        }
-
-        //for now we will use a temp possible move to do this........
-        int[][] posMoves = currentGame.getCurrentBoard().getPieceAt(location[0], location[1]).computePossible(currentGame.getCurrentBoard());
-
-        //For all possible moves for the currently selected piece, we just set the opacity of the clickGrid cell to 1 so it outlines the cell.
-        for(int[] coord : posMoves) {
-            Node cell = getCell(clickGrid, coord[0], coord[1]);
-            cell.setOpacity(1); //Ignore this check, it will not be null unless we screw up
         }
     };
 

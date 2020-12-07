@@ -5,6 +5,7 @@ import com.cs360.chess.Board;
 public final class Bishop extends Piece {
 
     private static final int points = 3;
+    private static final int id = 3;
 
     public Bishop(boolean isBlack, int column, int row) {
         super(isBlack, column, row);
@@ -25,8 +26,13 @@ public final class Bishop extends Piece {
     }
 
     @Override
+    public int getId() {
+        return id;
+    }
+
+    @Override
     public int[][] computePossible(Board board) {
-        if (board.isWhiteToMove() && isBlack()) return new int[0][0];
+//        if (board.isWhiteToMove() && isBlack()) return new int[0][0];
         return diagonalMoves(board, this);
     }
 

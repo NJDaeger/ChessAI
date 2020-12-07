@@ -28,12 +28,7 @@ public final class IconMap {
     }
 
     public static Image getIcon(Piece piece) {
-        if (piece instanceof Pawn) return (piece.isBlack() ? blackPieces : whitePieces).get(0);
-        else if (piece instanceof Rook) return (piece.isBlack() ? blackPieces : whitePieces).get(1);
-        else if (piece instanceof Knight) return (piece.isBlack() ? blackPieces : whitePieces).get(2);
-        else if (piece instanceof Bishop) return (piece.isBlack() ? blackPieces : whitePieces).get(3);
-        else if (piece instanceof King) return (piece.isBlack() ? blackPieces : whitePieces).get(4);
-        else return (piece.isBlack() ? blackPieces : whitePieces).get(5);
+        return (piece.isBlack() ? blackPieces : whitePieces).get(piece.getId());
     }
 
 }

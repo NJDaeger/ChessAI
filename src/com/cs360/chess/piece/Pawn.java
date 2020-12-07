@@ -5,6 +5,7 @@ import com.cs360.chess.Board;
 public final class Pawn extends Piece {
 
     private static final int points = 1;
+    private static final int id = 0;
 
     public Pawn(boolean isBlack, int column, int row) {
         super(isBlack, column, row);
@@ -24,12 +25,17 @@ public final class Pawn extends Piece {
         return points;
     }
 
+    @Override
+    public int getId() {
+        return id;
+    }
+
     //2 spaces forward first shot if clear
     //1 space forward from then on if clear
     //can move diagonally 1 space (forward) only if there is a piece in the said diagonal spot
     @Override
     public int[][] computePossible(Board board) {
-        if (board.isWhiteToMove() && isBlack()) return new int[0][0];
+//        if (board.isWhiteToMove() && isBlack()) return new int[0][0];
         int direction = isBlack() ? 1 : -1;
         int[][] moves = new int[4][2];
         int index = 0;
@@ -53,7 +59,7 @@ public final class Pawn extends Piece {
         }
         
         //No attack, move forward 2 spaces if the piece has not moved ever
-        if (!hasMoved() && board.isInBounds(getColumn(), getRow() + (2 * direction)) && !board.isPieceAt(getColumn(), getRow() + (2 * direction))) {
+        if (!hasMoved() && board.isInBounds(getColumn(), getRow() + (2 * direction)) && !board.isPieceAt(getColumn(), getRow() + (2 * direction)) && !board.isPieceAt(getColumn(), getRow() + direction)) {
             moves[index] = new int[]{getColumn(), getRow() + (2 * direction)};
             index++;
         }

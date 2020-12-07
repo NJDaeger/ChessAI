@@ -5,6 +5,7 @@ import com.cs360.chess.Board;
 public final class Knight extends Piece {
 
     private static final int points = 3;
+    private static final int id = 2;
 
     public Knight(boolean isBlack, int column, int row) {
         super(isBlack, column, row);
@@ -24,11 +25,16 @@ public final class Knight extends Piece {
         return points;
     }
 
+    @Override
+    public int getId() {
+        return id;
+    }
+
     // L L L L L L L L L
     //can skip
     @Override
     public int[][] computePossible(Board board) {
-        if (board.isWhiteToMove() && isBlack()) return new int[0][0];
+//        if (board.isWhiteToMove() && isBlack()) return new int[0][0];
         int[][] moves = new int[8][2];
         int index = 0;
         /*

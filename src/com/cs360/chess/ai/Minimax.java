@@ -31,14 +31,14 @@ public class Minimax {
     public int minmax(Node node, int depth, int alpha, int beta){
         Board board = node.nodeBoard;
 
-        node.calculateChildren(); //We only want to calculate children if we are NOT the root node. (the roots children is calculated in bestMove())
+        node.calculateChildren();
 
         if(depth == 1){
             return board.calcBoardScore();
         }
 
         if(!board.isWhiteToMove()) {
-            int maxScore = -2000;
+            int maxScore = Integer.MIN_VALUE;
             for(Node child: node.children){
                 child.score = minmax(child, depth-1, alpha, beta);
                 maxScore = Math.max(maxScore, child.score);
@@ -48,7 +48,7 @@ public class Minimax {
             //if AI white, move white here
             return maxScore;
         } else{
-            int minScore = 2000;
+            int minScore = Integer.MAX_VALUE;
             for(Node child: node.children){
                 child.score = minmax(child, depth-1,alpha, beta);
                 minScore = Math.min(minScore, child.score);
@@ -95,13 +95,8 @@ public class Minimax {
 //
         minmax(root, depth, -2000, 2000);
 
-        if(!root.nodeBoard.isWhiteToMove()) {
-            return minNode(root).nodeBoard;
-        }
-        else{
-            //if white is to move, probably wont implement this for final submission
-        }
-        return null;
+        return minNode(root).nodeBoard;
+
     }
 
     /**
@@ -123,9 +118,9 @@ public class Minimax {
         }
         System.out.println();
         for(Node temp : mins){
-            System.out.print(temp.score);
-
+            System.out.print(temp.score + " ");
         }
+        System.out.println();
         return mins.get(new Random().nextInt(mins.size()));
     }
 

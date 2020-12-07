@@ -7,6 +7,7 @@ import java.util.Arrays;
 public final class King extends Piece {
 
     private static final int points = 1500;
+    private static final int id = 4;
 
     public King(boolean isBlack, int column, int row) {
         super(isBlack, column, row);
@@ -26,10 +27,15 @@ public final class King extends Piece {
         return points;
     }
 
+    @Override
+    public int getId() {
+        return id;
+    }
+
     //all directions, max of 1 space at a time
     @Override
     public int[][] computePossible(Board board) {
-        if (board.isWhiteToMove() && isBlack()) return new int[0][0];
+//        if (board.isWhiteToMove() && isBlack()) return new int[0][0];
         int[][] moves = new int[10][2];
         int index = 0;
         /*
@@ -122,7 +128,7 @@ public final class King extends Piece {
 
         int[][] trimmedMoves = new int[index][2];
         System.arraycopy(moves, 0, trimmedMoves, 0, index);
-        return trimmedMoves;
+        return board.findSafe(this, trimmedMoves);
     }
 
     @Override

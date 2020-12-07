@@ -2,6 +2,8 @@ package com.cs360.chess;
 
 import com.cs360.chess.piece.*;
 
+import java.util.Arrays;
+
 /**
  * The grid of pieces which can be manipulated. This can represent a primary board, or a future board depending on its context.
  */
@@ -106,9 +108,48 @@ public class Board {
                 break;
             }
         }
-        changeTurn();
+        this.whiteToMove = !whiteToMove;
     }
 
+    public boolean isSafe(Piece searchFor, int column, int row) {
+        for (Piece piece : pieces) {
+            if (piece != null && piece.isBlack() != searchFor.isBlack() && searchFor.getId() != piece.getId()) {
+                int[][] potentialCollisions = piece.computePossible(this);
+                for (int[] collision : potentialCollisions) {
+                    if (column == collision[0] && row == collision[1]) return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public int[][] findSafe(Piece searchFor, int[][] positions) {
+        int[][] safe = new int[positions.length][2];
+        int index = 0;
+        Board cloned = new Board(this);
+        cloned.clearPieceAt(searchFor.getColumn(), searchFor.getRow());
+        for (int[] pos : positions) {
+            boolean safeFlag = true;
+            for (Piece piece : cloned.getPieces()) {
+                if (piece != null && !(searchFor.isBlack() == piece.isBlack()) && searchFor.getId() != piece.getId()) {
+                    int[][] potentialCollisions = piece.computePossible(this);
+                    for (int[] collision : potentialCollisions) {
+                        if (pos[0] == collision[0] && pos[1] == collision[1]) {
+                            safeFlag = false;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (safeFlag) {
+                safe[index] = pos;
+                index++;
+            }
+        }
+        int[][] trimmedMoves = new int[index][2];
+        System.arraycopy(safe, 0, trimmedMoves, 0, index);
+        return trimmedMoves;
+    }
 
     /**
      * Get a piece at a specific location on the board.
@@ -194,20 +235,16 @@ public class Board {
     }
 
     public int calcBoardScore(){
-        Piece[] whitePieces = this.getWhitePieces();
-        Piece[] blackPieces = this.getBlackPieces();
         int whiteScore =0;
         int blackScore =0;
-        for (Piece whitePiece : whitePieces) {
-            whiteScore += whitePiece.getPoints();
+
+        for (Piece piece : pieces) {
+            if (piece != null) {
+                if (piece.isBlack()) blackScore += piece.getPoints();
+                else whiteScore += piece.getPoints();
+            }
         }
-        for (Piece blackPiece : blackPieces) {
-            blackScore += blackPiece.getPoints();
-        }
-        //System.out.println("Turn: "+whiteToMove+"WhiteScore: "+whiteScore+"   leafScore: "+(whiteScore-blackScore));
+
         return whiteScore-blackScore;
     }
-
-    void changeTurn(){whiteToMove=!whiteToMove;}
-
 }
