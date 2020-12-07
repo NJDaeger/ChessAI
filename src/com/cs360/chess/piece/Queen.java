@@ -33,11 +33,11 @@ public final class Queen extends Piece {
     //can move in any (forward, backward, left, right, diagonal) direction at any distance as long as the path is clear
     @Override
     public int[][] computePossible(Board board) {
-        if (isBlack()) {
+        /*if (isBlack()) {
             if (!board.isWhiteToMove() && board.isBlackInCheck()) return new int[0][0];
         } else {
             if (board.isWhiteToMove() && board.isWhiteInCheck()) return new int[0][0];
-        }
+        }*/
         int[][] xPattern = diagonalMoves(board, this);
         int[][] plusPattern = straightMoves(board, this);
         int[][] moves = new int[xPattern.length + plusPattern.length][2];

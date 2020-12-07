@@ -128,6 +128,14 @@ public class Board {
         return whiteKing == -1 || pieces[whiteKing].computePossible(this).length != 0 && pieces[whiteKing].findNonIntersecting(this).length == 0;
     }
 
+    public Piece getBlackKing() {
+        return blackKing == -1 ? null : pieces[blackKing];
+    }
+
+    public Piece getWhiteKing() {
+        return whiteKing == -1 ? null : pieces[whiteKing];
+    }
+
     /**
      * Get a piece at a specific location on the board.
      * @param column The column of the piece you want

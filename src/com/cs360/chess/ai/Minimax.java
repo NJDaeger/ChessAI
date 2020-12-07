@@ -231,6 +231,8 @@ public class Minimax {
                     for (int[] coord : possible) {
                         Board childBoard = new Board(nodeBoard);//clone
                         childBoard.movePiece(piece.getColumn(),piece.getRow(),coord[0],coord[1]);
+                        if (!nodeBoard.isWhiteToMove() && childBoard.getBlackKing() == null) continue;
+                        else if (nodeBoard.isWhiteToMove() && childBoard.getWhiteKing() == null) continue;
                         Node childNode = new Node(childBoard);
                         children.add(childNode);
                     }

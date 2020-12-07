@@ -33,11 +33,11 @@ public final class Rook extends Piece {
     //forward, backward, left, or right in any direction at any amount as long as there no pieces in the way
     @Override
     public int[][] computePossible(Board board) {
-        if (isBlack()) {
+        /*if (isBlack()) {
             if (!board.isWhiteToMove() && board.isBlackInCheck()) return new int[0][0];
         } else {
             if (board.isWhiteToMove() && board.isWhiteInCheck()) return new int[0][0];
-        }
+        }*/
         return straightMoves(board, this);
     }
 
