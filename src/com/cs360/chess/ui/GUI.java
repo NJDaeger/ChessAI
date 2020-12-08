@@ -112,8 +112,6 @@ public class GUI extends Application {
         heightProp = borderPane.heightProperty().subtract(menuBar.heightProperty());
         size = (DoubleBinding) Bindings.when(widthProp.greaterThan(heightProp)).then(heightProp.divide(8)).otherwise(widthProp.divide(8));
 
-        stage.setOnCloseRequest(e -> currentGame.close());
-
         //Generating all the tiles on the tile grid.
         for (int column = 0; column < 8; column++) {
             for (int row = 0; row < 8; row++) {

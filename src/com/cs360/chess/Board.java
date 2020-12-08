@@ -94,14 +94,17 @@ public class Board {
 
         int index = 0;
         for (Piece piece : pieces) {
-            index++;
             if (piece != null && piece.getColumn() == column && piece.getRow() == row) {
                 clearPieceAt(newColumn, newRow);
 
                 //Handling pawn promotion here so the AI always sees it
                 if (piece instanceof Pawn && (newRow == 0 || newRow == 7)) {
-                    clearPieceAt(row, column);
+                    System.out.println(pieces[index]);
+                    pieces[index] = null;
+                    System.out.println(pieces[index]);
                     pieces[index] = new Queen(piece.isBlack(), true, newColumn, newRow);
+                    System.out.println(pieces[index]);
+                    System.out.println(getPieceAt(column, row));
                     break;
                 }
 
@@ -116,6 +119,7 @@ public class Board {
                 piece.setHasMoved(true);
                 break;
             }
+            index++;
         }
         this.whiteToMove = !whiteToMove;
     }

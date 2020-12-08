@@ -14,7 +14,6 @@ public class Game implements Serializable {
 
     private int depth = 4;
     private Board currentBoard;
-    private Minimax currentTree;
     private Stack<Board> undoStack;
     private Stack<Board> redoStack;
 
@@ -29,9 +28,6 @@ public class Game implements Serializable {
         //The last move we just undid
         this.redoStack = new Stack<>();
         this.currentBoard = new Board();
-
-
-        this.currentTree = new Minimax(currentBoard, depth);
     }
 
     public Board getCurrentBoard() {
@@ -72,15 +68,11 @@ public class Game implements Serializable {
         return undoStack.peek();
     }
 
-    public void close() {
-        currentTree.shutdownThreads();
-    }
-
     public void aiTurn(){
         Minimax ai = new Minimax(currentBoard,depth);
         Board newBoard = ai.bestMove();
         if (newBoard == null) System.out.println("YOU WIN");
-        else currentBoard = ai.bestMove();
+        else currentBoard = newBoard;
     }
 
 }

@@ -7,17 +7,11 @@ import com.cs360.chess.piece.Piece;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.*;
-import java.lang.*;
-import java.util.stream.Collectors;
 
 public class Minimax {
 
-    private final int threads = 16;
     private Node root;
     private int depth;
-
-    private final ExecutorService executor = Executors.newFixedThreadPool(threads);
 
     /**
      * Generate a minimax tree
@@ -40,7 +34,7 @@ public class Minimax {
 
         if(board.isWhiteToMove()) {
             int maxScore = -10000;
-            for(Node child: node.children){
+            for(Node child: node.children) {
                 child.score = minmax(child, depth-1, alpha, beta);
                 maxScore = Math.max(maxScore, child.score);
                 alpha = Math.max(alpha, maxScore);
@@ -51,7 +45,7 @@ public class Minimax {
         } else{
             int minScore = 10000;
             for(Node child: node.children){
-                child.score = minmax(child, depth-1,alpha, beta);
+                child.score = minmax(child, depth-1, alpha, beta);
                 minScore = Math.min(minScore, child.score);
                 beta = Math.min(beta,minScore);
                 if(beta <= alpha)break;//pruning
@@ -65,38 +59,12 @@ public class Minimax {
      * @return Board that represents the AI's next best move
      */
     public Board bestMove(){
-//        root.calculateChildren();
-//        //System.out.println("root has: " + root.children.size() + " children");
-//
-//        int remainder = root.children.size() % threads;
-//        int totalOffset = 0;
-//        int perThread = 1;
-//
-//        List<Future<List<Node>>> futures = new ArrayList<>();
-//        if (root.children.size() > threads) perThread = (root.children.size() - remainder) / threads; //This is the number of nodes we need per thread to split equally;
-//        for (int i = 0; i < threads; i++) {
-//            //We are splitting the children into chunks for the threads
-//            if (remainder > totalOffset) totalOffset++;
-//            List<Node> children = root.children.stream().skip(perThread*i + totalOffset).limit(perThread + (remainder > totalOffset ? 1 : 0)).collect(Collectors.toList());
-//            System.out.println(i + " skipped:" + (perThread*i + totalOffset-1) + " computed: " + (perThread + (remainder > totalOffset ? 1 : 0)));
-////            List<Node> children = root.children.stream().skip(threads*i + (remainder-- > 0 ? ++offset : 0)).limit((root.children.size()-root.children.size() % threads)/threads + (remainder > 0 ? 1 : 0)).collect(Collectors.toList());
-//            futures.add(executor.submit(new ComputeThread(children)));
-//        }
-//        //I clear the children and then add all the children from the futures (its the same children, but just computed this time)
-//        root.children.clear();
-//        futures.forEach(f -> {
-//            try {
-//                root.children.addAll(f.get());
-//            } catch (InterruptedException | ExecutionException e) {
-//                e.printStackTrace();
-//            }
-//        });
-//        futures.clear();
-//
-//
+        System.out.println("Starting best move search");
+        long start = System.currentTimeMillis();
         minmax(root, depth, -2000, 2000);
 
         Node node = minNode(root);
+        System.out.println("Search finished. Time elapsed: " + (System.currentTimeMillis() - start) + "ms");
         if (node == null) return null;
         else return node.nodeBoard;
 
@@ -132,10 +100,6 @@ public class Minimax {
         this.depth = x;
     }
 
-    public void shutdownThreads() {
-        executor.shutdownNow();
-    }
-
     public void killTree() {
         root.children.clear();
         root = null;
@@ -145,60 +109,8 @@ public class Minimax {
         this.root = new Node(board);
     }
 
-    public void recomputeTree(Board board) {
-        root = new Node(board);
-        bestMove();
-
-        //Notes for Noah
-        //
-        //Completely redid tree building
-        // The multi threading was also causing bugs anyways, but can probably be implemented best in calcChildren
-
-
-//        System.out.println(root.children.size());
-//        int remainder = root.children.size() % threads;
-//        int offset = 0;
-//        List<Future<List<Node>>> futures = new ArrayList<>();
-//        for (int i = 0; i < threads; i++) {
-//            List<Node> children = root.children.stream().skip(threads*i + (remainder-- > 0 ? ++offset : 0)).limit((root.children.size()-root.children.size() % threads)/threads + (remainder > 0 ? 1 : 0)).collect(Collectors.toList());
-//            futures.add(executor.submit(new ComputeThread(children)));
-//        }
-//        root.children.clear();
-//        futures.forEach(f -> {
-//            try {
-//                root.children.addAll(f.get());
-//            } catch (InterruptedException | ExecutionException e) {
-//                e.printStackTrace();
-//            }
-//        });
-//        futures.clear();
-    }
-
     public Node getRoot() {
         return root;
-    }
-
-    //since the nodes childrens are now ranked.... all you
-
-
-    private class ComputeThread implements Callable<List<Node>> {
-
-        private final List<Node> nodes;
-
-        public ComputeThread(List<Node> nodes) {
-            this.nodes = nodes;
-        }
-
-        @Override
-        public List<Node> call() {
-            long start = System.currentTimeMillis();
-            for (Node node : nodes) {
-                minmax(node, depth - 1, -2000, 2000);
-                //node.calculateChildren(depth - 1);
-            }
-            System.out.println("finished " + nodes.size() + " nodes in " + (System.currentTimeMillis()-start) + "ms");
-            return nodes;
-        }
     }
 
     private class Node {
@@ -238,6 +150,7 @@ public class Minimax {
                     }
                 }
             }
+//            children.sort(Comparator.comparingInt(n -> n.nodeBoard.calcBoardScore()));
             //sort here depending on white or black top optimize min max
             //children.sort();
         }
