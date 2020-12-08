@@ -190,9 +190,7 @@ public class GUI extends Application {
         if (selection instanceof ImageView && !currentGame.getCurrentBoard().getPieceAt(column, row).isBlack()) {
             currentGame.setSelectedLocation(new int[]{column, row});
             location = currentGame.getSelectedLocation();
-            Piece piece = currentGame.getCurrentBoard().getPieceAt(location[0], location[1]);
-            System.out.println(currentGame.getCurrentBoard().isWhiteInCheck() + " " + currentGame.getCurrentBoard().isBlackInCheck());
-            for(int[] coord : piece instanceof King ? piece.findNonIntersecting(currentGame.getCurrentBoard()) : piece.computePossible(currentGame.getCurrentBoard())) {
+            for(int[] coord : currentGame.getValidSpotsFrom(location[0], location[1])) {
                 Node cell = getCell(clickGrid, coord[0], coord[1]);
                 cell.setOpacity(1); //Ignore this check, it will not be null unless we screw up
             }

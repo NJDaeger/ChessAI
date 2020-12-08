@@ -1,6 +1,10 @@
 package com.cs360.chess;
 
 import com.cs360.chess.ai.*;
+import com.cs360.chess.piece.King;
+import com.cs360.chess.piece.Piece;
+import javafx.scene.Node;
+
 import java.io.Serializable;
 import java.util.Stack;
 
@@ -16,11 +20,7 @@ public class Game implements Serializable {
     private Board currentBoard;
     private Stack<Board> undoStack;
     private Stack<Board> redoStack;
-
-
-
     private int[] selected;
-    //todo handle minimax in this class.
 
     public Game() {
         //The last move we just did
@@ -66,6 +66,24 @@ public class Game implements Serializable {
         undoStack.push(currentBoard);
         this.currentBoard = nextMove;
         return undoStack.peek();
+    }
+
+    public int[][] getValidSpotsFrom(int column, int row) {
+        Piece piece = currentBoard.getPieceAt(column, row);
+        int[][] moves = piece instanceof King ? piece.findNonIntersecting(currentBoard) : piece.computePossible(currentBoard);
+        int[][] valid = new int[moves.length][2];
+        int index = 0;
+        for(int[] coord : moves) {
+            Board clone = new Board(currentBoard);
+            clone.movePiece(column, row, coord[0], coord[1]);
+            if (currentBoard.isWhiteToMove() && !clone.isWhiteInCheck()) {
+                valid[index] = coord;
+                index++;
+            }
+        }
+        int[][] trimmedMoves = new int[index][2];
+        System.arraycopy(valid, 0, trimmedMoves, 0, index);
+        return trimmedMoves;
     }
 
     public void aiTurn(){

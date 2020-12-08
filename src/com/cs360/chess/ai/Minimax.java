@@ -114,11 +114,11 @@ public class Minimax {
         return root;
     }
 
-    private class Node {
+    public static class Node {
 
         private int score;
         private final Board nodeBoard;
-        private ArrayList<Node> children;
+        private List<Node> children;
 
         public Node(Board board) {
             nodeBoard = board;
@@ -129,7 +129,9 @@ public class Minimax {
         }
 
 
-
+        public List<Node> getChildren() {
+            return children;
+        }
 
         //To maximize MiniMax gains, Order the lists from best move to worst move for p
 
@@ -144,8 +146,8 @@ public class Minimax {
                     for (int[] coord : possible) {
                         Board childBoard = new Board(nodeBoard);//clone
                         childBoard.movePiece(piece.getColumn(),piece.getRow(),coord[0],coord[1]);
-                        if (!nodeBoard.isWhiteToMove() && childBoard.getBlackKing() == null) continue;
-                        else if (nodeBoard.isWhiteToMove() && childBoard.getWhiteKing() == null) continue;
+                        if (!nodeBoard.isWhiteToMove() && childBoard.isBlackInCheck()) continue;
+                        else if (nodeBoard.isWhiteToMove() && childBoard.isWhiteInCheck()) continue;
                         Node childNode = new Node(childBoard);
                         children.add(childNode);
                     }

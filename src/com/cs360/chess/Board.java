@@ -2,8 +2,6 @@ package com.cs360.chess;
 
 import com.cs360.chess.piece.*;
 
-import java.util.Arrays;
-
 /**
  * The grid of pieces which can be manipulated. This can represent a primary board, or a future board depending on its context.
  */
@@ -13,6 +11,9 @@ public class Board {
     boolean whiteToMove = true; //flag that controls who's turn it is
     private int blackKing = -1; //Index of the black king
     private int whiteKing = -1; //Index of the white king
+    private boolean blackInCheck = false;
+    private boolean whiteInCheck = false;
+
     /**
      * Creates a new board instance with a fresh set of pieces
      */
@@ -61,6 +62,8 @@ public class Board {
     public Board(Board parent) {
         this.pieces = new Piece[32];
         this.whiteToMove = parent.whiteToMove;
+        this.blackInCheck = parent.blackInCheck;
+        this.whiteInCheck = parent.whiteInCheck;
 
         int i = 0; //Keeping an index of the next available position in array
         for (Piece piece : parent.pieces) {
@@ -117,15 +120,41 @@ public class Board {
             }
             index++;
         }
+        updateKingCheckStatus();
         this.whiteToMove = !whiteToMove;
     }
 
+    private void updateKingCheckStatus() {
+        this.blackInCheck = blackKing != -1 && hasIntersections(true);
+        this.whiteInCheck = whiteKing != -1 && hasIntersections(false);
+    }
+
+    /**
+     * Checks if there are path intersections at a given spot from the opposing team.
+     * @param checkBlack The color of the king you want to check
+     * @return True if there are any intersections at all.
+     */
+    public boolean hasIntersections(boolean checkBlack) {
+        if (checkBlack && blackKing == -1) return true;
+        else if (!checkBlack && whiteKing == -1) return true;
+        int row =  pieces[checkBlack ? blackKing : whiteKing].getRow();
+        int column =  pieces[checkBlack ? blackKing : whiteKing].getColumn();
+        for (Piece piece : pieces) {
+            if (piece != null && checkBlack != piece.isBlack()) {
+                for (int[] coord : piece.computePossible(this)) {
+                    if (coord[0] == column && coord[1] == row) return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public boolean isBlackInCheck() {
-        return blackKing == -1 || pieces[blackKing].computePossible(this).length != 0 && pieces[blackKing].findNonIntersecting(this).length == 0;
+        return blackKing == -1 || blackInCheck;
     }
 
     public boolean isWhiteInCheck() {
-        return whiteKing == -1 || pieces[whiteKing].computePossible(this).length != 0 && pieces[whiteKing].findNonIntersecting(this).length == 0;
+        return whiteKing == -1 || whiteInCheck;
     }
 
     public Piece getBlackKing() {
