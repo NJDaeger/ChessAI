@@ -99,12 +99,8 @@ public class Board {
 
                 //Handling pawn promotion here so the AI always sees it
                 if (piece instanceof Pawn && (newRow == 0 || newRow == 7)) {
-                    System.out.println(pieces[index]);
                     pieces[index] = null;
-                    System.out.println(pieces[index]);
                     pieces[index] = new Queen(piece.isBlack(), true, newColumn, newRow);
-                    System.out.println(pieces[index]);
-                    System.out.println(getPieceAt(column, row));
                     break;
                 }
 

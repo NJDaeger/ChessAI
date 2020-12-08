@@ -5,6 +5,7 @@ import com.cs360.chess.piece.King;
 import com.cs360.chess.piece.Piece;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 
@@ -150,7 +151,7 @@ public class Minimax {
                     }
                 }
             }
-//            children.sort(Comparator.comparingInt(n -> n.nodeBoard.calcBoardScore()));
+            children.sort(Comparator.comparingInt(n -> ((Node)n).nodeBoard.calcBoardScore()).reversed());
             //sort here depending on white or black top optimize min max
             //children.sort();
         }
