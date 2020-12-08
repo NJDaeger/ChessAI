@@ -82,7 +82,7 @@ public abstract class Piece implements Cloneable {
             boolean safeFlag = true;
             for (Piece piece : cloned.getPieces()) {
                 if (piece != null && !(isBlack() == piece.isBlack())) {
-                    int[][] potentialCollisions = piece.computePossible(board);
+                    int[][] potentialCollisions = piece.computePossible(cloned);
                     for (int[] collision : potentialCollisions) {
                         if (pos[0] == collision[0] && pos[1] == collision[1]) {
                             safeFlag = false;
@@ -114,9 +114,10 @@ public abstract class Piece implements Cloneable {
         for (int dx = 1; dx < 8; dx++) {
             //Bottom right of piece
             if (br && board.isInBounds(column + dx, row + dx)) {
-                if (board.isPieceAt(column + dx, row + dx)) {
+                Piece temp = board.getPieceAt(column + dx, row + dx);
+                if (temp != null) {
                     br = false; //We want to stop going to the bottom right
-                    if (board.getPieceAt(column + dx, row + dx).isBlack() != piece.isBlack()) {
+                    if (temp.isBlack() != piece.isBlack()) {
                         moves[index] = new int[]{column + dx, row + dx};
                         index++;
                     }
@@ -128,9 +129,10 @@ public abstract class Piece implements Cloneable {
 
             //Bottom left of piece
             if (bl && board.isInBounds(column - dx, row + dx)) {
-                if (board.isPieceAt(column - dx, row + dx)) {
+                Piece temp = board.getPieceAt(column - dx, row + dx);
+                if (temp != null) {
                     bl = false; //We want to stop going to the bottom right
-                    if (board.getPieceAt(column - dx, row + dx).isBlack() != piece.isBlack()) {
+                    if (temp.isBlack() != piece.isBlack()) {
                         moves[index] = new int[]{column - dx, row + dx};
                         index++;
                     }
@@ -142,9 +144,10 @@ public abstract class Piece implements Cloneable {
 
             //Top right of piece
             if (tr && board.isInBounds(column + dx, row - dx)) {
-                if (board.isPieceAt(column + dx, row - dx)) {
+                Piece temp = board.getPieceAt(column + dx, row - dx);
+                if (temp != null) {
                     tr = false; //We want to stop going to the bottom right
-                    if (board.getPieceAt(column + dx, row - dx).isBlack() != piece.isBlack()) {
+                    if (temp.isBlack() != piece.isBlack()) {
                         moves[index] = new int[]{column + dx, row - dx};
                         index++;
                     }
@@ -156,9 +159,10 @@ public abstract class Piece implements Cloneable {
 
             //Top left of piece
             if (tl && board.isInBounds(column - dx, row - dx)) {
-                if (board.isPieceAt(column - dx, row - dx)) {
+                Piece temp = board.getPieceAt(column - dx, row - dx);
+                if (temp != null) {
                     tl = false; //We want to stop going to the bottom right
-                    if (board.getPieceAt(column - dx, row - dx).isBlack() != piece.isBlack()) {
+                    if (temp.isBlack() != piece.isBlack()) {
                         moves[index] = new int[]{column - dx, row - dx};
                         index++;
                     }
@@ -189,9 +193,10 @@ public abstract class Piece implements Cloneable {
 
             //Search below
             if (down && board.isInBounds(column + dx, row)) {
-                if (board.isPieceAt(column + dx, row)) {
+                Piece temp = board.getPieceAt(column + dx, row);
+                if (temp != null) {
                     down = false;
-                    if (board.getPieceAt(column + dx, row).isBlack() != piece.isBlack()) {
+                    if (temp.isBlack() != piece.isBlack()) {
                         moves[index] = new int[]{column + dx, row};
                         index++;
                     }
@@ -203,9 +208,10 @@ public abstract class Piece implements Cloneable {
 
             //Search above
             if (up && board.isInBounds(column - dx, row)) {
-                if (board.isPieceAt(column - dx, row)) {
+                Piece temp = board.getPieceAt(column - dx, row);
+                if (temp != null) {
                     up = false;
-                    if (board.getPieceAt(column - dx, row).isBlack() != piece.isBlack()) {
+                    if (temp.isBlack() != piece.isBlack()) {
                         moves[index] = new int[]{column - dx, row};
                         index++;
                     }
@@ -217,9 +223,10 @@ public abstract class Piece implements Cloneable {
 
             //Search right
             if (right && board.isInBounds(column, row + dx)) {
-                if (board.isPieceAt(column, row + dx)) {
+                Piece temp = board.getPieceAt(column, row + dx);
+                if (temp != null) {
                     right = false;
-                    if (board.getPieceAt(column, row + dx).isBlack() != piece.isBlack()) {
+                    if (temp.isBlack() != piece.isBlack()) {
                         moves[index] = new int[]{column, row + dx};
                         index++;
                     }
@@ -231,9 +238,10 @@ public abstract class Piece implements Cloneable {
 
             //Search left
             if (left && board.isInBounds(column, row - dx)) {
-                if (board.isPieceAt(column, row - dx)) {
+                Piece temp = board.getPieceAt(column, row - dx);
+                if (temp != null) {
                     left = false;
-                    if (board.getPieceAt(column, row - dx).isBlack() != piece.isBlack()) {
+                    if (temp.isBlack() != piece.isBlack()) {
                         moves[index] = new int[]{column, row - dx};
                         index++;
                     }

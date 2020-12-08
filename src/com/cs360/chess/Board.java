@@ -93,7 +93,7 @@ public class Board {
      * @param newRow The newRow position of the piece
      */
     public void movePiece(int column, int row, int newColumn, int newRow) {
-        if (column > 7 || row > 7 || newColumn > 7 || newRow > 7) throw new RuntimeException("Piece out of bounds");
+        if (!isInBounds(column, row) || !isInBounds(newColumn, newRow)) throw new RuntimeException("Piece out of bounds");
 
         int index = 0;
         for (Piece piece : pieces) {
@@ -220,36 +220,6 @@ public class Board {
      */
     public Piece[] getPieces() {
         return pieces;
-    }
-
-    /**
-     * Get all the current black pieces on the board
-     * @return An array of all the current black pieces on the board.
-     */
-    public Piece[] getBlackPieces() {
-        Piece[] pieces = new Piece[16];
-        int i = 0;
-        for (Piece piece : this.pieces) {
-            if (piece != null && piece.isBlack()) pieces[i++] = piece;
-        }
-        Piece[] resized = new Piece[i];
-        System.arraycopy(pieces, 0, resized, 0, i);
-        return resized;
-    }
-
-    /**
-     * Get all the current white pieces on the board
-     * @return An array of all the current white pieces on the board. Null indices indicates there are no more pieces found afterwards.
-     */
-    public Piece[] getWhitePieces() {
-        Piece[] pieces = new Piece[16];
-        int i = 0;
-        for (Piece piece : this.pieces) {
-            if (piece != null && !piece.isBlack()) pieces[i++] = piece;
-        }
-        Piece[] resized = new Piece[i];
-        System.arraycopy(pieces, 0, resized, 0, i);
-        return resized;
     }
 
     public int calcBoardScore(){
