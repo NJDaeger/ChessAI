@@ -26,8 +26,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
-import java.util.Arrays;
-
 public class GUI extends Application {
     
     public static void main(String[] args) {
@@ -127,7 +125,7 @@ public class GUI extends Application {
                 tileGrid.add(tile, column, row);
                 //tiles[column][row] = tile;
 
-                ClickView clickableTile = new ClickView(column, row);
+                ClickableTile clickableTile = new ClickableTile(column, row);
                 clickableTile.setOpacity(0);
                 clickableTile.addEventHandler(MouseEvent.MOUSE_CLICKED, tileClickEvent);
                 clickableTile.widthProperty().bind(size);
@@ -185,8 +183,8 @@ public class GUI extends Application {
 //        int column = ((ClickView) event.getSource()).getColumn(); //The column of the spot just clicked
 //        int row = ((ClickView) event.getSource()).getRow(); //The row of the spot just picked
 
-        int column = ((ClickView) event.getSource()).getColumn();
-        int row = ((ClickView) event.getSource()).getRow();
+        int column = ((ClickableTile) event.getSource()).getColumn();
+        int row = ((ClickableTile) event.getSource()).getRow();
 
         Node selection = getCell(pieceGrid, column, row);
         if (selection instanceof ImageView && !currentGame.getCurrentBoard().getPieceAt(column, row).isBlack()) {
