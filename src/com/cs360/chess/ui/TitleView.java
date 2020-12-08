@@ -4,46 +4,77 @@ import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
+import javafx.scene.control.Label;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
 public class TitleView extends Application {
     private BorderPane titleBorderPane;
     private Button playButton;
-    private GridPane buttonGrid;
+    private GridPane centerGrid;
+//    private GridPane buttonGrid;
     private StackPane titleStack;
     private Button loadButton;
     private Button exitButton;
+    private Label titleLabel;
 
     public static void main(String[] args) {
         launch(args);
     }
-
+    //constructors for h-boxes
+    public HBox addHBox1() {
+        HBox hbox = new HBox();
+        hbox.setSpacing(10);
+        titleLabel = new Label("Chess");
+        titleLabel.getStyleClass().add("titleLabel");
+        hbox.getChildren().addAll(titleLabel);
+        hbox.setAlignment(Pos.CENTER);
+        return hbox;
+    }
+    public HBox addHBox2() {
+        HBox hbox = new HBox();
+        hbox.setSpacing(10);
+        playButton = new Button("Play Game");
+        playButton.getStyleClass().add("titleButton");
+        loadButton = new Button("Load Game");
+        loadButton.getStyleClass().add("titleButton");
+        hbox.getChildren().addAll(playButton, loadButton);
+        hbox.setAlignment(Pos.CENTER);
+        return hbox;
+    }
+    public HBox addHBox3() {
+        HBox hbox = new HBox();
+        hbox.setSpacing(10);
+        exitButton = new Button("Exit Game");
+        exitButton.getStyleClass().add("titleButton");
+        hbox.getChildren().addAll(exitButton);
+        hbox.setAlignment(Pos.CENTER);
+        return hbox;
+    }
+    //constructor for v-box
+    public VBox addVBox(){
+        VBox vbox = new VBox();
+        vbox.setSpacing(10);
+        vbox.getChildren().addAll(addHBox1(), addHBox2(), addHBox3());
+        vbox.setAlignment(Pos.CENTER);
+        return vbox;
+    }
     @Override
     public void start(Stage stage) throws Exception {
-        playButton = new Button("Play Game");
-        loadButton = new Button("Load Game");
-        exitButton = new Button("Exit Game");
         titleBorderPane = new BorderPane();
         titleStack = new StackPane();
         titleStack.setId("pane");
-        buttonGrid = new GridPane();
-        stage.setHeight(600);
-        stage.setWidth(600);
+        stage.setHeight(800);
+        stage.setWidth(800);
         stage.setTitle("Chess AI");
+        stage.setResizable(false);
         Scene titleScene = new Scene(titleBorderPane);
+        stage.setTitle("Chess");
         titleScene.getStylesheets().add(this.getClass().getResource("/StyleSheet.css").toExternalForm());
-        playButton.getStyleClass().add("titleButton");
-        loadButton.getStyleClass().add("titleButton");
-        exitButton.getStyleClass().add("titleButton");
-        buttonGrid.setHgap(15);
-        buttonGrid.add(playButton, 0, 0);
-        buttonGrid.add(loadButton, 1, 0);
-        buttonGrid.add(exitButton, 2, 0);
-        buttonGrid.setAlignment(Pos.CENTER);
-        titleStack.getChildren().add(buttonGrid);
+        centerGrid = new GridPane();
+        centerGrid.add(addVBox(), 0, 1);
+        centerGrid.setAlignment(Pos.CENTER);
+        titleStack.getChildren().add(centerGrid);
         titleBorderPane.setCenter(titleStack);
         stage.setScene(titleScene);
         stage.show();
