@@ -33,7 +33,7 @@ public class Minimax {
             return board.calcBoardScore();
         }
 
-        if(board.isWhiteToMove()) {
+        if (board.isWhiteToMove()) {
             int maxScore = -10000;
             for(Node child: node.children) {
                 child.score = minmax(child, depth-1, alpha, beta);
@@ -53,6 +53,7 @@ public class Minimax {
             }
             return minScore;
         }
+
     }
 
     /**
@@ -62,6 +63,7 @@ public class Minimax {
     public Board bestMove(){
         System.out.println("Starting best move search");
         long start = System.currentTimeMillis();
+
         minmax(root, depth, -2000, 2000);
 
         Node node = minNode(root);
@@ -157,7 +159,7 @@ public class Minimax {
                 children.sort(Comparator.comparingInt(n -> ((Node) n).nodeBoard.calcBoardScore()).reversed());
             }
             else{
-                children.sort(Comparator.comparingInt(n -> ((Node)n).nodeBoard.calcBoardScore()));
+                children.sort(Comparator.comparingInt(n -> n.nodeBoard.calcBoardScore()));
             }
 
             //sort here depending on white or black top optimize min max

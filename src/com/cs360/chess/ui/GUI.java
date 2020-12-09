@@ -3,6 +3,7 @@ package com.cs360.chess.ui;
 import com.cs360.chess.Board;
 import com.cs360.chess.Game;
 import com.cs360.chess.IconMap;
+import com.cs360.chess.ai.Minimax;
 import com.cs360.chess.piece.King;
 import com.cs360.chess.piece.Piece;
 import de.codecentric.centerdevice.javafxsvg.SvgImageLoaderFactory;
