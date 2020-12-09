@@ -1,9 +1,8 @@
 package com.cs360.chess;
 
-import com.cs360.chess.ai.*;
+import com.cs360.chess.ai.Minimax;
 import com.cs360.chess.piece.King;
 import com.cs360.chess.piece.Piece;
-import javafx.scene.Node;
 
 import java.io.Serializable;
 import java.util.Stack;
@@ -87,6 +86,19 @@ public class Game implements Serializable {
     }
 
     public void aiTurn(){
+        /*try {
+            this.currentBoard = executor.submit(() -> {
+                Minimax ai = new Minimax(currentBoard,depth);
+                Board newBoard = ai.bestMove();
+                if (newBoard == null) {
+                    System.out.println("YOU WIN");
+                    return null;
+                }
+                else return newBoard;
+            }).get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }*/
         Minimax ai = new Minimax(currentBoard,depth);
         Board newBoard = ai.bestMove();
         if (newBoard == null) System.out.println("YOU WIN");

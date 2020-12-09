@@ -10,9 +10,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
-import java.awt.event.ActionListener;
-
-public class TitleView extends Application{
+public class TitleView extends Application {
     private BorderPane titleBorderPane;
     private Button playButton;
     private GridPane centerGrid;
