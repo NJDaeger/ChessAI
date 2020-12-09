@@ -10,6 +10,7 @@ import javafx.application.Application;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.ReadOnlyDoubleProperty;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -27,6 +28,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 public class GUI extends Application {
     
     public static void main(String[] args) {
@@ -34,6 +38,7 @@ public class GUI extends Application {
     }
 
     private Game currentGame;
+    public static final ExecutorService executor = Executors.newSingleThreadExecutor();
 
     //FX stuff
     private GridPane tileGrid;
@@ -185,6 +190,11 @@ public class GUI extends Application {
                 System.exit(0);
             }
         });
+
+        stage.setOnCloseRequest(e -> {
+            executor.shutdownNow();
+        });
+
         //Generating all the tiles on the tile grid.
         for (int column = 0; column < 8; column++) {
             for (int row = 0; row < 8; row++) {
@@ -219,7 +229,7 @@ public class GUI extends Application {
     }
 
     //updates the GUI
-    void update(Board board){
+    public void update(Board board){
         pieceGrid.getChildren().clear();
 
         for(int column=0;column<8;column++){
@@ -248,6 +258,8 @@ public class GUI extends Application {
             }
         }
     }
+
+
 
     //event Handlers
     EventHandler<MouseEvent> tileClickEvent = event -> {
@@ -278,8 +290,19 @@ public class GUI extends Application {
                 currentGame.getCurrentBoard().movePiece(location[0], location[1], column, row);
                 update(currentGame.getCurrentBoard());
                 currentGame.setSelectedLocation(null);
-                currentGame.aiTurn();
-                update(currentGame.getCurrentBoard());
+                Task<Board> task = new Task<>() {
+
+                    @Override
+                    protected Board call() throws Exception {
+                        currentGame.aiTurn();
+                        return currentGame.getCurrentBoard();
+                    }
+                };
+                task.setOnSucceeded(e -> {
+                    update(currentGame.getCurrentBoard());
+                });
+                executor.submit(task);
+
                 return;
             }
             else currentGame.setSelectedLocation(null);
