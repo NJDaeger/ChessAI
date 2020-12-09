@@ -58,12 +58,9 @@ public class GUI extends Application {
     private MenuItem quit = new MenuItem("Quit");
     private MenuItem exit = new MenuItem("Exit");
 
-    private Menu difficulty = new Menu("Adjust Difficulty");
-    private MenuItem easy= new MenuItem("Beginner");
-    private MenuItem normal= new MenuItem("Casual");
-    private MenuItem hard= new MenuItem("Intermediate");
-    private MenuItem master= new MenuItem("Master");
-
+    private Menu help = new Menu("Help");
+    private MenuItem undo = new MenuItem("Undo");
+    private MenuItem redo = new MenuItem("Redo");
     //We use bindings to make the rectangles automatically adjust to window size changes.
     //Since the board most be square, we must use a conditional binding.
     //If the width is larger than the height, the height property divided by 8 is used as the length of each side of the square
@@ -95,9 +92,9 @@ public class GUI extends Application {
         stage.setTitle("Chess AI");
 
         //Adding the menubar to the borderpane.
-        difficulty.getItems().addAll(easy,normal,hard,master);
-        game.getItems().addAll(save,flipBoard,restart,quit, exit);
-        menuBar.getMenus().addAll(game,difficulty);
+        game.getItems().addAll(save,flipBoard,restart,quit,exit);
+        help.getItems().addAll(undo, redo);
+        menuBar.getMenus().addAll(game);
 
         borderPane = new BorderPane();
         borderPane.setTop(menuBar);
@@ -115,43 +112,7 @@ public class GUI extends Application {
         heightProp = borderPane.heightProperty().subtract(menuBar.heightProperty());
         size = (DoubleBinding) Bindings.when(widthProp.greaterThan(heightProp)).then(heightProp.divide(8)).otherwise(widthProp.divide(8));
 
-        //Action event handling for menu bar items
-        easy.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                //TODO add check if game has started
-                //Set the depth to be an easy difficulty
-                currentGame.setDepth(2);
-            }
-        });
-
-        normal.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                //TODO add check if game has started
-                //Set the depth to be a normal difficulty
-                currentGame.setDepth(3);
-            }
-        });
-
-        hard.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                //TODO add check if game has started
-                //Set the depth to be a hard difficulty
-                currentGame.setDepth(4);
-            }
-        });
-
-        master.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                //TODO add check if game has started
-                //Set the depth to be a master difficulty
-                currentGame.setDepth(5);
-            }
-        });
-
+        //Action handling for menubar options
         save.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
@@ -188,6 +149,24 @@ public class GUI extends Application {
             public void handle(ActionEvent actionEvent) {
                 //Exit the game
                 System.exit(0);
+            }
+        });
+
+        undo.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                //TODO implement undo
+                //Undo the previous move
+                currentGame.undo();
+            }
+        });
+
+        redo.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                //TODO implement redo
+                //Redo the undone move, if available
+                currentGame.redo();
             }
         });
 
