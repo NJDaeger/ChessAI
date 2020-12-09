@@ -153,7 +153,13 @@ public class Minimax {
                     }
                 }
             }
-            children.sort(Comparator.comparingInt(n -> ((Node)n).nodeBoard.calcBoardScore()).reversed());
+            if(nodeBoard.isWhiteToMove()) {//opposite of it's children, so in this case if black is to move
+                children.sort(Comparator.comparingInt(n -> ((Node) n).nodeBoard.calcBoardScore()).reversed());
+            }
+            else{
+                children.sort(Comparator.comparingInt(n -> ((Node)n).nodeBoard.calcBoardScore()));
+            }
+
             //sort here depending on white or black top optimize min max
             //children.sort();
         }
