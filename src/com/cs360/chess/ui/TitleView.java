@@ -11,18 +11,26 @@ import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
 public class TitleView extends Application {
+    //Main container
     private BorderPane titleBorderPane;
-    private Button playButton;
+    //Inner container
     private GridPane centerGrid;
-//    private GridPane buttonGrid;
+    //For alignment
     private StackPane titleStack;
+    //Buttons
+    private Button twoPlayerButton;
     private Button loadButton;
     private Button exitButton;
+    private Button easyButton;
+    private Button normalButton;
+    private Button hardButton;
+    private Button masterButton;
+    //Game title
     private Label titleLabel;
     public static void main(String[] args) {
         launch(args);
     }
-    //constructors for h-boxes
+    //Constructors for h-boxes
     public HBox addHBox1() {
         HBox hbox = new HBox();
         hbox.setSpacing(10);
@@ -32,36 +40,68 @@ public class TitleView extends Application {
         hbox.setAlignment(Pos.CENTER);
         return hbox;
     }
-    public HBox addHBox2() {
+    public HBox addHBox2(){
         HBox hbox = new HBox();
         hbox.setSpacing(10);
-        playButton = new Button("Play Game");
-        playButton.getStyleClass().add("titleButton");
+        twoPlayerButton = new Button("Play 2 Player Game");
+        twoPlayerButton.getStyleClass().add("titleButton");
+        hbox.getChildren().addAll(twoPlayerButton);
+        hbox.setAlignment(Pos.CENTER);
+        return hbox;
+    }
+
+    public HBox addHBox3(){
+        HBox hbox = new HBox();
+        hbox.setSpacing(10);
+        easyButton = new Button("Play Easy Game");
+        easyButton.getStyleClass().add("titleButton");
+        easyButton.setPrefWidth(350);
+        normalButton = new Button("Play Normal Game");
+        normalButton.getStyleClass().add("titleButton");
+        normalButton.setPrefWidth(350);
+        hbox.getChildren().addAll(easyButton, normalButton);
+        hbox.setAlignment(Pos.CENTER);
+        return hbox;
+    }
+
+    public HBox addHBox4(){
+        HBox hbox = new HBox();
+        hbox.setSpacing(10);
+        hardButton = new Button("Play Hard Game");
+        hardButton.getStyleClass().add("titleButton");
+        hardButton.setPrefWidth(350);
+        masterButton = new Button("Player Master Game");
+        masterButton.getStyleClass().add("titleButton");
+        masterButton.setPrefWidth(350);
+        hbox.getChildren().addAll(hardButton, masterButton);
+        hbox.setAlignment(Pos.CENTER);
+        return hbox;
+    }
+
+    public HBox addHBox5() {
+        HBox hbox = new HBox();
+        hbox.setSpacing(10);
         loadButton = new Button("Load Game");
         loadButton.getStyleClass().add("titleButton");
-        hbox.getChildren().addAll(playButton, loadButton);
-        hbox.setAlignment(Pos.CENTER);
-        return hbox;
-    }
-    public HBox addHBox3() {
-        HBox hbox = new HBox();
-        hbox.setSpacing(10);
+        loadButton.setPrefWidth(200);
         exitButton = new Button("Exit Game");
         exitButton.getStyleClass().add("titleButton");
-        hbox.getChildren().addAll(exitButton);
+        exitButton.setPrefWidth(200);
+        hbox.getChildren().addAll(loadButton, exitButton);
         hbox.setAlignment(Pos.CENTER);
         return hbox;
     }
-    //constructor for v-box
+    //Constructor for v-box
     public VBox addVBox(){
         VBox vbox = new VBox();
         vbox.setSpacing(10);
-        vbox.getChildren().addAll(addHBox1(), addHBox2(), addHBox3());
+        vbox.getChildren().addAll(addHBox1(), addHBox2(), addHBox3(), addHBox4(), addHBox5());
         vbox.setAlignment(Pos.CENTER);
         return vbox;
     }
     @Override
     public void start(Stage stage) throws Exception {
+        //Initializing alignment elements, setting title
         titleBorderPane = new BorderPane();
         titleStack = new StackPane();
         titleStack.setId("pane");
@@ -71,17 +111,23 @@ public class TitleView extends Application {
         stage.setResizable(false);
         Scene titleScene = new Scene(titleBorderPane);
         stage.setTitle("Chess");
+        //Applying the background image and other scene styling
         titleScene.getStylesheets().add(this.getClass().getResource("/StyleSheet.css").toExternalForm());
+        //Adding elements to inner pane
         centerGrid = new GridPane();
         centerGrid.add(addVBox(), 0, 1);
         centerGrid.setAlignment(Pos.CENTER);
+        //Adding the inner pane to the stack
         titleStack.getChildren().add(centerGrid);
+        //Adding the stack to the main pane
         titleBorderPane.setCenter(titleStack);
-        playButton.setOnAction(new EventHandler<ActionEvent>() {
+
+        //Event handling for buttons, can be refactored
+        twoPlayerButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
                 //TODO merge GUIs to allow scene selection/game starting
-                //Initiate a new game and switch scenes
+                //Initiate a new game and switch scenes, no AI usage
             }
         });
         loadButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -98,6 +144,43 @@ public class TitleView extends Application {
                 System.exit(0);
             }
         });
+
+        easyButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                //TODO allow depth to be passed when a game is started
+                //Set the depth to be an easy difficulty
+//                currentGame.setDepth(2);
+            }
+        });
+
+        normalButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                //TODO allow depth to be passed when a game is started
+                //Set the depth to be a normal difficulty
+//                currentGame.setDepth(3);
+            }
+        });
+
+        hardButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                //TODO allow depth to be passed when a game is started
+                //Set the depth to be a hard difficulty
+//                currentGame.setDepth(4);
+            }
+        });
+
+        masterButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                //TODO allow depth to be passed when a game is started
+                //Set the depth to be a master difficulty
+//                currentGame.setDepth(5);
+            }
+        });
+
         stage.setScene(titleScene);
         stage.show();
     }
