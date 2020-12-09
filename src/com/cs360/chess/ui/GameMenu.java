@@ -10,14 +10,16 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
-public class TitleView extends Application {
+public class GameMenu extends Application {
     //Main container
-    private BorderPane titleBorderPane;
+    BorderPane titleBorderPane;
     //Inner container
     private GridPane centerGrid;
     //For alignment
     private StackPane titleStack;
     //Buttons
+
+    private Stage stage;
     private Button twoPlayerButton;
     private Button loadButton;
     private Button exitButton;
@@ -101,13 +103,13 @@ public class TitleView extends Application {
     }
     @Override
     public void start(Stage stage) throws Exception {
+        this.stage = stage;
         //Initializing alignment elements, setting title
         titleBorderPane = new BorderPane();
         titleStack = new StackPane();
         titleStack.setId("pane");
         stage.setHeight(800);
         stage.setWidth(800);
-        stage.setTitle("Chess AI");
         stage.setResizable(false);
         Scene titleScene = new Scene(titleBorderPane);
         stage.setTitle("Chess");
@@ -122,67 +124,50 @@ public class TitleView extends Application {
         //Adding the stack to the main pane
         titleBorderPane.setCenter(titleStack);
 
+        stage.setOnCloseRequest(e -> ChessBoardView.executor.shutdownNow());
+
         //Event handling for buttons, can be refactored
-        twoPlayerButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                //TODO merge GUIs to allow scene selection/game starting
-                //Initiate a new game and switch scenes, no AI usage
-            }
+        twoPlayerButton.setOnAction(actionEvent -> {
+            //TODO merge GUIs to allow scene selection/game starting
+            //Initiate a new game and switch scenes, no AI usage
         });
-        loadButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                //TODO implement loading
-                //Load a saved game and switch scenes if a valid game is chosen
-            }
+        loadButton.setOnAction(actionEvent -> {
+            //TODO implement loading
+            //Load a saved game and switch scenes if a valid game is chosen
         });
-        exitButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                //Exit the game
-                System.exit(0);
-            }
+        exitButton.setOnAction(actionEvent -> System.exit(0));
+
+
+        easyButton.setOnAction(actionEvent -> {
+            ChessBoardView chessGame = new ChessBoardView(this);
+            stage.setScene(chessGame);
+            chessGame.getCurrentGame().setDepth(2);
         });
 
-        easyButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                //TODO allow depth to be passed when a game is started
-                //Set the depth to be an easy difficulty
-//                currentGame.setDepth(2);
-            }
+        normalButton.setOnAction(actionEvent -> {
+            ChessBoardView chessGame = new ChessBoardView(this);
+            stage.setScene(chessGame);
+            chessGame.getCurrentGame().setDepth(3);
         });
 
-        normalButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                //TODO allow depth to be passed when a game is started
-                //Set the depth to be a normal difficulty
-//                currentGame.setDepth(3);
-            }
+        hardButton.setOnAction(actionEvent -> {
+            ChessBoardView chessGame = new ChessBoardView(this);
+            stage.setScene(chessGame);
+            chessGame.getCurrentGame().setDepth(4);
         });
 
-        hardButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                //TODO allow depth to be passed when a game is started
-                //Set the depth to be a hard difficulty
-//                currentGame.setDepth(4);
-            }
-        });
-
-        masterButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                //TODO allow depth to be passed when a game is started
-                //Set the depth to be a master difficulty
-//                currentGame.setDepth(5);
-            }
+        masterButton.setOnAction(actionEvent -> {
+            ChessBoardView chessGame = new ChessBoardView(this);
+            stage.setScene(chessGame);
+            chessGame.getCurrentGame().setDepth(5);
         });
 
         stage.setScene(titleScene);
         stage.show();
+    }
+
+    public Stage getStage() {
+        return stage;
     }
 }
 //

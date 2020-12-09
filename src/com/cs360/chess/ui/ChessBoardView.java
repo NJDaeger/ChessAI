@@ -16,6 +16,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -24,6 +25,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -32,14 +34,10 @@ import javafx.stage.Stage;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class GUI extends Application {
-    
-    public static void main(String[] args) {
-        launch(args);
-    }
+public class ChessBoardView extends Scene {
 
     private Game currentGame;
-    public static final ExecutorService executor = Executors.newSingleThreadExecutor();
+    static final ExecutorService executor = Executors.newSingleThreadExecutor();
 
     //FX stuff
     private GridPane tileGrid;
@@ -70,7 +68,117 @@ public class GUI extends Application {
     private DoubleBinding heightProp;
     private DoubleBinding size;
 
-    @Override
+    public ChessBoardView(GameMenu gameMenu) {
+        super(new BorderPane());
+        SvgImageLoaderFactory.install(); //Required so we can load SVG images in the program.
+        IconMap.loadIcons(); //Loading our icons
+
+        borderPane = (BorderPane) getRoot();
+        currentGame = new Game();
+
+        //Tile grid holding the colored tiles of the board.
+        tileGrid = new GridPane();
+        //Piece grid holding the pieces
+        pieceGrid = new GridPane();
+        //Click grid where the user interacts with the board and where tiles are highlighted from
+        clickGrid = new GridPane();
+        //Stack pane which compiles each of the grids together in one object.
+        boardStack = new StackPane();
+
+        //Adding the menubar to the borderpane.
+        game.getItems().addAll(save,flipBoard,restart,quit,exit);
+        help.getItems().addAll(undo, redo);
+        menuBar.getMenus().addAll(game);
+
+        borderPane.setTop(menuBar);
+
+        //General alignment/placement of the grids
+        tileGrid.setAlignment(Pos.CENTER);
+        pieceGrid.setAlignment(Pos.CENTER);
+        clickGrid.setAlignment(Pos.CENTER);
+        boardStack.getChildren().add(tileGrid);
+        boardStack.getChildren().add(pieceGrid);
+        boardStack.getChildren().add(clickGrid);
+        borderPane.setCenter(boardStack);
+
+        widthProp = borderPane.widthProperty();
+        heightProp = borderPane.heightProperty().subtract(menuBar.heightProperty());
+        size = (DoubleBinding) Bindings.when(widthProp.greaterThan(heightProp)).then(heightProp.divide(8)).otherwise(widthProp.divide(8));
+
+        //Action handling for menubar options
+        save.setOnAction(actionEvent -> {
+            //TODO add saving
+            //Save the current piece positions so the game can be resumed later or loaded
+        });
+
+        flipBoard.setOnAction(actionEvent -> {
+            //TODO add flip method
+            //Flip the positions of enemy and friendly pieces
+        });
+
+        restart.setOnAction(actionEvent -> {
+            //TODO add board reset
+        });
+
+        quit.setOnAction(actionEvent -> {
+            gameMenu.getStage().setScene(gameMenu.titleBorderPane.getScene());
+        });
+
+        exit.setOnAction(actionEvent -> {
+            //Exit the game
+            System.exit(0);
+        });
+
+        undo.setOnAction(actionEvent -> {
+            //TODO implement undo
+            //Undo the previous move
+            currentGame.undo();
+        });
+
+        redo.setOnAction(actionEvent -> {
+            //TODO implement redo
+            //Redo the undone move, if available
+            currentGame.redo();
+        });
+
+        //Generating all the tiles on the tile grid.
+        for (int column = 0; column < 8; column++) {
+            for (int row = 0; row < 8; row++) {
+
+                //We create a rectangle which is to be filled with the correct color to create a checkered pattern.
+//                TileView tile = new TileView(column,row);
+                Rectangle tile = new Rectangle();
+                tile.setFill(((column + row) % 2 == 0) ? Color.TAN : Color.MAROON);
+
+                //Setting the bindings and adding the tile
+                tile.widthProperty().bind(size);
+                tile.heightProperty().bind(size);
+                tileGrid.add(tile, column, row);
+                //tiles[column][row] = tile;
+
+                ClickableTile clickableTile = new ClickableTile(column, row);
+                clickableTile.setOpacity(0);
+                clickableTile.addEventHandler(MouseEvent.MOUSE_CLICKED, tileClickEvent);
+                clickableTile.widthProperty().bind(size);
+                clickableTile.heightProperty().bind(size);
+                clickGrid.add(clickableTile, column, row);
+            }
+        }
+
+        //Update the board with the current board piece locations.
+        update(currentGame.getCurrentBoard());
+
+        //Create the scene and show it on the stage
+        /*Scene mainScreen = new Scene(borderPane);
+        stage.setScene(mainScreen);
+        stage.show();*/
+    }
+
+    public Game getCurrentGame() {
+        return currentGame;
+    }
+
+    /*    @Override
     public void start(Stage stage) throws Exception {
         SvgImageLoaderFactory.install(); //Required so we can load SVG images in the program.
         IconMap.loadIcons(); //Loading our icons
@@ -206,7 +314,7 @@ public class GUI extends Application {
         Scene mainScreen = new Scene(borderPane);
         stage.setScene(mainScreen);
         stage.show();
-    }
+    }*/
 
     //updates the GUI
     public void update(Board board){
