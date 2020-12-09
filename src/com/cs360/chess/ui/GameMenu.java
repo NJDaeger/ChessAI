@@ -47,6 +47,7 @@ public class GameMenu extends Application {
         hbox.setSpacing(10);
         twoPlayerButton = new Button("Play 2 Player Game");
         twoPlayerButton.getStyleClass().add("titleButton");
+        twoPlayerButton.setSkin(new HoverSkin(twoPlayerButton));
         hbox.getChildren().addAll(twoPlayerButton);
         hbox.setAlignment(Pos.CENTER);
         return hbox;
@@ -58,9 +59,11 @@ public class GameMenu extends Application {
         easyButton = new Button("Play Easy Game");
         easyButton.getStyleClass().add("titleButton");
         easyButton.setPrefWidth(350);
+        easyButton.setSkin(new HoverSkin(easyButton));
         normalButton = new Button("Play Normal Game");
         normalButton.getStyleClass().add("titleButton");
         normalButton.setPrefWidth(350);
+        normalButton.setSkin(new HoverSkin(normalButton));
         hbox.getChildren().addAll(easyButton, normalButton);
         hbox.setAlignment(Pos.CENTER);
         return hbox;
@@ -72,9 +75,11 @@ public class GameMenu extends Application {
         hardButton = new Button("Play Hard Game");
         hardButton.getStyleClass().add("titleButton");
         hardButton.setPrefWidth(350);
+        hardButton.setSkin(new HoverSkin(hardButton));
         masterButton = new Button("Player Master Game");
         masterButton.getStyleClass().add("titleButton");
         masterButton.setPrefWidth(350);
+        masterButton.setSkin(new HoverSkin(masterButton));
         hbox.getChildren().addAll(hardButton, masterButton);
         hbox.setAlignment(Pos.CENTER);
         return hbox;
@@ -86,9 +91,11 @@ public class GameMenu extends Application {
         loadButton = new Button("Load Game");
         loadButton.getStyleClass().add("titleButton");
         loadButton.setPrefWidth(200);
+        loadButton.setSkin(new HoverSkin(loadButton));
         exitButton = new Button("Exit Game");
         exitButton.getStyleClass().add("titleButton");
         exitButton.setPrefWidth(200);
+        exitButton.setSkin(new HoverSkin(exitButton));
         hbox.getChildren().addAll(loadButton, exitButton);
         hbox.setAlignment(Pos.CENTER);
         return hbox;
