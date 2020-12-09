@@ -1,6 +1,8 @@
 package com.cs360.chess.ui;
 
 import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -8,7 +10,9 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
-public class TitleView extends Application {
+import java.awt.event.ActionListener;
+
+public class TitleView extends Application{
     private BorderPane titleBorderPane;
     private Button playButton;
     private GridPane centerGrid;
@@ -17,7 +21,6 @@ public class TitleView extends Application {
     private Button loadButton;
     private Button exitButton;
     private Label titleLabel;
-
     public static void main(String[] args) {
         launch(args);
     }
@@ -76,6 +79,27 @@ public class TitleView extends Application {
         centerGrid.setAlignment(Pos.CENTER);
         titleStack.getChildren().add(centerGrid);
         titleBorderPane.setCenter(titleStack);
+        playButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                //TODO merge GUIs to allow scene selection/game starting
+                //Initiate a new game and switch scenes
+            }
+        });
+        loadButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                //TODO implement loading
+                //Load a saved game and switch scenes if a valid game is chosen
+            }
+        });
+        exitButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                //Exit the game
+                System.exit(0);
+            }
+        });
         stage.setScene(titleScene);
         stage.show();
     }
