@@ -62,9 +62,9 @@ public class GUI extends Application {
     private MenuItem undo = new MenuItem("Undo");
     private MenuItem redo = new MenuItem("Redo");
     //We use bindings to make the rectangles automatically adjust to window size changes.
-    //Since the board most be square, we must use a conditional binding.
-    //If the width is larger than the height, the height property divided by 8 is used as the length of each side of the square
-    //If the height is larger than the width, the width property divided by 8 is used as the length of each side of the square
+    //Since the board must be square, we must use a conditional binding.
+    //If the width is larger than the height, the height property divided by 8 is used as the length of each side of the square.
+    //If the height is larger than the width, the width property divided by 8 is used as the length of each side of the square.
     private ReadOnlyDoubleProperty widthProp;
     private DoubleBinding heightProp;
     private DoubleBinding size;

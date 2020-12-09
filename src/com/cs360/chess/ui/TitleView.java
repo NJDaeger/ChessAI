@@ -11,10 +11,13 @@ import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
 public class TitleView extends Application {
+    //Main container
     private BorderPane titleBorderPane;
+    //Inner container
     private GridPane centerGrid;
-//    private GridPane buttonGrid;
+    //For alignment
     private StackPane titleStack;
+    //Buttons
     private Button twoPlayerButton;
     private Button loadButton;
     private Button exitButton;
@@ -22,11 +25,12 @@ public class TitleView extends Application {
     private Button normalButton;
     private Button hardButton;
     private Button masterButton;
+    //Game title
     private Label titleLabel;
     public static void main(String[] args) {
         launch(args);
     }
-    //constructors for h-boxes
+    //Constructors for h-boxes
     public HBox addHBox1() {
         HBox hbox = new HBox();
         hbox.setSpacing(10);
@@ -87,7 +91,7 @@ public class TitleView extends Application {
         hbox.setAlignment(Pos.CENTER);
         return hbox;
     }
-    //constructor for v-box
+    //Constructor for v-box
     public VBox addVBox(){
         VBox vbox = new VBox();
         vbox.setSpacing(10);
@@ -97,6 +101,7 @@ public class TitleView extends Application {
     }
     @Override
     public void start(Stage stage) throws Exception {
+        //Initializing alignment elements, setting title
         titleBorderPane = new BorderPane();
         titleStack = new StackPane();
         titleStack.setId("pane");
@@ -106,12 +111,18 @@ public class TitleView extends Application {
         stage.setResizable(false);
         Scene titleScene = new Scene(titleBorderPane);
         stage.setTitle("Chess");
+        //Applying the background image and other scene styling
         titleScene.getStylesheets().add(this.getClass().getResource("/StyleSheet.css").toExternalForm());
+        //Adding elements to inner pane
         centerGrid = new GridPane();
         centerGrid.add(addVBox(), 0, 1);
         centerGrid.setAlignment(Pos.CENTER);
+        //Adding the inner pane to the stack
         titleStack.getChildren().add(centerGrid);
+        //Adding the stack to the main pane
         titleBorderPane.setCenter(titleStack);
+
+        //Event handling for buttons, can be refactored
         twoPlayerButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
@@ -134,7 +145,6 @@ public class TitleView extends Application {
             }
         });
 
-        //Action event handling for menu bar items
         easyButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
