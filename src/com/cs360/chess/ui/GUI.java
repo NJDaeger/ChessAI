@@ -10,6 +10,7 @@ import javafx.application.Application;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.ReadOnlyDoubleProperty;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -50,8 +51,7 @@ public class GUI extends Application {
     private MenuItem restart = new MenuItem("Restart");
     private MenuItem save = new MenuItem("Save");
     private MenuItem quit = new MenuItem("Quit");
-
-    private Menu exit = new Menu("Exit");
+    private MenuItem exit = new MenuItem("Exit");
 
     private Menu difficulty = new Menu("Adjust Difficulty");
     private MenuItem easy= new MenuItem("Beginner");
@@ -91,8 +91,8 @@ public class GUI extends Application {
 
         //Adding the menubar to the borderpane.
         difficulty.getItems().addAll(easy,normal,hard,master);
-        game.getItems().addAll(save,flipBoard,restart,quit);
-        menuBar.getMenus().addAll(game,difficulty,exit);
+        game.getItems().addAll(save,flipBoard,restart,quit, exit);
+        menuBar.getMenus().addAll(game,difficulty);
 
         borderPane = new BorderPane();
         borderPane.setTop(menuBar);
@@ -110,6 +110,81 @@ public class GUI extends Application {
         heightProp = borderPane.heightProperty().subtract(menuBar.heightProperty());
         size = (DoubleBinding) Bindings.when(widthProp.greaterThan(heightProp)).then(heightProp.divide(8)).otherwise(widthProp.divide(8));
 
+        //Action event handling for menu bar items
+        easy.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                //TODO add check if game has started
+                //Set the depth to be an easy difficulty
+                currentGame.setDepth(2);
+            }
+        });
+
+        normal.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                //TODO add check if game has started
+                //Set the depth to be a normal difficulty
+                currentGame.setDepth(3);
+            }
+        });
+
+        hard.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                //TODO add check if game has started
+                //Set the depth to be a hard difficulty
+                currentGame.setDepth(4);
+            }
+        });
+
+        master.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                //TODO add check if game has started
+                //Set the depth to be a master difficulty
+                currentGame.setDepth(5);
+            }
+        });
+
+        save.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                //TODO add saving
+                //Save the current piece positions so the game can be resumed later or loaded
+            }
+        });
+
+        flipBoard.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                //TODO add flip method
+                //Flip the positions of enemy and friendly pieces
+            }
+        });
+
+        restart.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                //TODO add board reset
+            }
+        });
+
+        quit.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                //TODO merge GUIs to allow returning to menu
+                //Quit the game and return to the menu
+            }
+        });
+
+        exit.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                //Exit the game
+                System.exit(0);
+            }
+        });
         //Generating all the tiles on the tile grid.
         for (int column = 0; column < 8; column++) {
             for (int row = 0; row < 8; row++) {

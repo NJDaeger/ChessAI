@@ -232,7 +232,7 @@ public class Board {
                 else whiteScore += piece.getPoints();
             }
         }
-
+        
         return whiteScore-blackScore;
     }
 }
