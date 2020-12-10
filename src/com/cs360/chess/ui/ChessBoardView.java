@@ -50,7 +50,6 @@ public class ChessBoardView extends Scene {
 
     private MenuBar menuBar = new MenuBar();
     private Menu game = new Menu("Game");
-    private MenuItem flipBoard = new MenuItem("Flip Board");
     private MenuItem newGame = new MenuItem("New Game");
     private MenuItem restart = new MenuItem("Restart");
     private MenuItem save = new MenuItem("Save");
@@ -86,7 +85,7 @@ public class ChessBoardView extends Scene {
         boardStack = new StackPane();
 
         //Adding the menubar to the borderpane.
-        game.getItems().addAll(save,flipBoard,restart,quit,exit);
+        game.getItems().addAll(save,restart,quit,exit);
         help.getItems().addAll(undo, redo);
         menuBar.getMenus().addAll(game);
 
@@ -109,11 +108,6 @@ public class ChessBoardView extends Scene {
         save.setOnAction(actionEvent -> {
             //TODO add saving
             //Save the current piece positions so the game can be resumed later or loaded
-        });
-
-        flipBoard.setOnAction(actionEvent -> {
-            //TODO add flip method
-            //Flip the positions of enemy and friendly pieces
         });
 
         restart.setOnAction(actionEvent -> {
