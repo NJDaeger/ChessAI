@@ -76,9 +76,10 @@ public abstract class Piece implements Cloneable {
         addedSelf[positions.length] = new int[]{getColumn(), getRow()};
         int[][] safe = new int[addedSelf.length][2];
         int index = 0;
-        Board cloned = new Board(board);
-        cloned.clearPieceAt(getColumn(), getRow());//Temporarily clear the piece from the board to allow seeing through to the other side of the piece for danger.
         for (int[] pos : addedSelf) {
+            Board cloned = new Board(board);
+            cloned.movePiece(getColumn(), getRow(), pos[0], pos[1]);
+//            cloned.clearPieceAt(getColumn(), getRow());//Temporarily clear the piece from the board to allow seeing through to the other side of the piece for danger.
             boolean safeFlag = true;
             for (Piece piece : cloned.getPieces()) {
                 if (piece != null && !(isBlack() == piece.isBlack())) {
