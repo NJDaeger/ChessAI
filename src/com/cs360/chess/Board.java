@@ -235,4 +235,12 @@ public class Board {
         
         return whiteScore-blackScore;
     }
+
+    public int[] getChangedPieceCoordinate(Board oldBoard) {
+        for (int i = 0; i < oldBoard.pieces.length; i++) {
+            if (oldBoard.pieces[i] != null && pieces[i] != null && (oldBoard.pieces[i].getColumn() != pieces[i].getColumn() || oldBoard.pieces[i].getRow() != pieces[i].getRow())) return new int[]{oldBoard.pieces[i].getColumn(), oldBoard.pieces[i].getRow(), pieces[i].getColumn(), pieces[i].getRow()};
+        }
+        return null;
+    }
+
 }

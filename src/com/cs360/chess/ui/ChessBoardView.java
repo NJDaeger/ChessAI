@@ -3,24 +3,18 @@ package com.cs360.chess.ui;
 import com.cs360.chess.Board;
 import com.cs360.chess.Game;
 import com.cs360.chess.IconMap;
-import com.cs360.chess.ai.Minimax;
-import com.cs360.chess.piece.King;
-import com.cs360.chess.piece.Piece;
 import de.codecentric.centerdevice.javafxsvg.SvgImageLoaderFactory;
 import javafx.animation.FadeTransition;
-import javafx.animation.RotateTransition;
+import javafx.animation.Interpolator;
 import javafx.animation.ScaleTransition;
-import javafx.animation.StrokeTransition;
-import javafx.application.Application;
+import javafx.animation.TranslateTransition;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.concurrent.Task;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -29,20 +23,20 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class ChessBoardView extends Scene {
 
     private Game currentGame;
-    static final ExecutorService executor = Executors.newSingleThreadExecutor();
+    static final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
 
     //FX stuff
     private GridPane tileGrid;
@@ -165,17 +159,7 @@ public class ChessBoardView extends Scene {
         }
 
         //Update the board with the current board piece locations.
-        update(currentGame.getCurrentBoard());
-    }
-
-    public Game getCurrentGame() {
-        return currentGame;
-    }
-
-    //updates the GUI
-    public void update(Board board){
-        pieceGrid.getChildren().clear();
-
+        Board board = currentGame.getCurrentBoard();
         for(int column=0;column<8;column++){
             for(int row=0;row<8;row++){
 
@@ -203,9 +187,49 @@ public class ChessBoardView extends Scene {
         }
     }
 
+    public Game getCurrentGame() {
+        return currentGame;
+    }
+
+    public void movePieceToCell(int fromColumn, int fromRow, int toColumn, int toRow){
+
+        Node to = getCell(pieceGrid, toColumn, toRow);
+        if (to instanceof ImageView) {
+            FadeTransition fadeIn = new FadeTransition(Duration.millis(200));
+            fadeIn.setNode(to);
+            fadeIn.setToValue(0);
+            fadeIn.play();
+            fadeIn.setOnFinished(e -> {
+                pieceGrid.getChildren().remove(to);
+            });
+        } else if (to == null) return; //Not sure what would have happened to get this case.
+
+        Node from = getCell(pieceGrid, fromColumn, fromRow);//From should never be null
+        TranslateTransition translate = new TranslateTransition(Duration.millis(750));
+        translate.setInterpolator(Interpolator.EASE_OUT);
+        translate.setNode(from);
+        translate.setToX(to.getLayoutX() - from.getLayoutX());
+        translate.setToY(to.getLayoutY() - from.getLayoutY());
+        translate.playFromStart();
+
+        translate.setOnFinished(e -> {
+            pieceGrid.getChildren().remove(to);
+            pieceGrid.getChildren().remove(from);
+            Rectangle emptySpot = new Rectangle();
+            emptySpot.setOpacity(0);
+            emptySpot.widthProperty().bind(size);
+            emptySpot.heightProperty().bind(size);
+            pieceGrid.add(emptySpot, fromColumn, fromRow);
+            from.setTranslateX(0);
+            from.setTranslateY(0);
+            pieceGrid.add(from, toColumn, toRow);
+        });
+        pieceGrid.layout();
+    }
+
     //event Handlers
     EventHandler<MouseEvent> tileClickEvent = event -> {
-
+        if (!currentGame.getCurrentBoard().isWhiteToMove()) return;
         //remove everything to do with the last set of moves, wipe all markers
         clickGrid.getChildren().stream().filter(cell -> cell.getOpacity() == 1).forEach(cell -> {
             FadeTransition fadeOut = new FadeTransition(Duration.millis(200));
@@ -217,8 +241,6 @@ public class ChessBoardView extends Scene {
 
         int column = ((ClickableTile) event.getSource()).getColumn();
         int row = ((ClickableTile) event.getSource()).getRow();
-
-
 
         Node selection = getCell(pieceGrid, column, row);
 
@@ -252,20 +274,23 @@ public class ChessBoardView extends Scene {
         if (!(selection instanceof ImageView) || currentGame.getCurrentBoard().getPieceAt(column, row).isBlack()) {
             if (isValidSpot(currentGame.getValidSpotsFrom(location[0], location[1]), column, row) && (currentGame.getCurrentBoard().isWhiteToMove())) {
                 currentGame.getCurrentBoard().movePiece(location[0], location[1], column, row);
-                update(currentGame.getCurrentBoard());
+                movePieceToCell(location[0], location[1], column, row);
                 currentGame.setSelectedLocation(null);
+                Board copy = new Board(currentGame.getCurrentBoard());
                 Task<Board> task = new Task<>() {
-
                     @Override
                     protected Board call() {
                         currentGame.aiTurn();
                         return currentGame.getCurrentBoard();
                     }
                 };
-                task.setOnSucceeded(e -> update(currentGame.getCurrentBoard()));
-                executor.submit(task);
+                task.setOnSucceeded(e -> {
+                    int[] change = currentGame.getCurrentBoard().getChangedPieceCoordinate(copy);
+                    movePieceToCell(change[0], change[1], change[2], change[3]);
+                });
+                executor.schedule(task, 760, TimeUnit.MILLISECONDS);
             }
-            else currentGame.setSelectedLocation(null);
+            currentGame.setSelectedLocation(null);
 
         }
         
