@@ -9,23 +9,24 @@ public abstract class Piece implements Cloneable {
      */
     protected int data;
     
-    public Piece(boolean isBlack, int column, int row) {
-        this(isBlack, false, column, row);
+    public Piece(int id, boolean isBlack, int column, int row) {
+        this(id, isBlack, false, column, row);
     }
 
-    public Piece(boolean isBlack, boolean hasMoved, int column, int row) {
+    public Piece(int id, boolean isBlack, boolean hasMoved, int column, int row) {
         /*
-        This is packed as follows: 0000 0000 0000 0000
+        This is packed as follows: 00000000 0000 0000 0000 0000
 
         GOING FROM LEFT TO RIGHT...
 
+        The Unique id of the current piece
         The color of the current piece. 1 being black 0 being white
         The next is whether the piece has moved or not. 1 being yes, 0 being no
         The next is the column of the current piece
         And last is the row of the current piece.
 
          */
-        this.data = (isBlack ? 1 : 0) << 12 | (hasMoved ? 1 : 0) << 8 | column << 4 | row;
+        this.data = id << 16 | (isBlack ? 1 : 0) << 12 | (hasMoved ? 1 : 0) << 8 | column << 4 | row;
     }
 
     @Override
@@ -39,12 +40,16 @@ public abstract class Piece implements Cloneable {
 
     public abstract int getId();
 
+    public int getUniqueId() {
+        return (data >> 16) & 0xFF;
+    }
+
     public boolean hasMoved() {
         return ((data >> 8) & 0xF) == 1;
     }
 
     public void setHasMoved(boolean moved) {
-        this.data = (isBlack() ? 1 : 0) << 12 | (moved ? 1 : 0) << 8 | getColumn() << 4 | getRow();
+        this.data = getUniqueId() << 16 | (isBlack() ? 1 : 0) << 12 | (moved ? 1 : 0) << 8 | getColumn() << 4 | getRow();
     }
 
     public int getColumn() {
@@ -52,7 +57,7 @@ public abstract class Piece implements Cloneable {
     }
 
     public void setColumn(int column) {
-        this.data = (isBlack() ? 1 : 0) << 12 | (hasMoved() ? 1 : 0) << 8 | column << 4 | getRow();
+        this.data = getUniqueId() << 16 | (isBlack() ? 1 : 0) << 12 | (hasMoved() ? 1 : 0) << 8 | column << 4 | getRow();
     }
 
     public int getRow() {
@@ -60,7 +65,7 @@ public abstract class Piece implements Cloneable {
     }
 
     public void setRow(int row) {
-        this.data = (isBlack() ? 1 : 0) << 12 | (hasMoved() ? 1 : 0) << 8 | getColumn() << 4 | row;
+        this.data = getUniqueId() << 16 | (isBlack() ? 1 : 0) << 12 | (hasMoved() ? 1 : 0) << 8 | getColumn() << 4 | row;
     }
 
     /**

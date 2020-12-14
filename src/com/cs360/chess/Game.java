@@ -17,8 +17,8 @@ public class Game implements Serializable {
 
     private int depth = 5;
     private Board currentBoard;
-    private Stack<Board> undoStack;
-    private Stack<Board> redoStack;
+    private final Stack<Board> undoStack;
+    private final Stack<Board> redoStack;
     private int[] selected;
 
     public Game() {
@@ -50,8 +50,9 @@ public class Game implements Serializable {
      * @return The board before being undone.
      */
     public Board undo() {
+        if (undoStack.isEmpty()) return null;
         Board lastMove = undoStack.pop();
-        redoStack.push(currentBoard);
+        redoStack.push(new Board(currentBoard));
         this.currentBoard = lastMove;
         return redoStack.peek();
     }
@@ -61,10 +62,17 @@ public class Game implements Serializable {
      * @return The board before being redone
      */
     public Board redo() {
+        if (redoStack.isEmpty()) return null;
         Board nextMove = redoStack.pop();
-        undoStack.push(currentBoard);
+        undoStack.push(new Board(currentBoard));
         this.currentBoard = nextMove;
         return undoStack.peek();
+    }
+
+    public void movePiece(int fromColumn, int fromRow, int toColumn, int toRow) {
+        undoStack.push(new Board(currentBoard));
+        redoStack.clear();
+        currentBoard.movePiece(fromColumn, fromRow, toColumn, toRow);
     }
 
     public int[][] getValidSpotsFrom(int column, int row) {
@@ -86,23 +94,13 @@ public class Game implements Serializable {
     }
 
     public void aiTurn(){
-        /*try {
-            this.currentBoard = executor.submit(() -> {
-                Minimax ai = new Minimax(currentBoard,depth);
-                Board newBoard = ai.bestMove();
-                if (newBoard == null) {
-                    System.out.println("YOU WIN");
-                    return null;
-                }
-                else return newBoard;
-            }).get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }*/
         Minimax ai = new Minimax(currentBoard,depth);
         Board newBoard = ai.bestMove();
         if (newBoard == null) System.out.println("YOU WIN");
-        else currentBoard = newBoard;
+        else {
+            undoStack.push(currentBoard);
+            currentBoard = newBoard;
+        }
     }
 
 }

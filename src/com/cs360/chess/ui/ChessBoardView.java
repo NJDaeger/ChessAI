@@ -16,6 +16,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -28,7 +29,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -55,9 +55,8 @@ public class ChessBoardView extends Scene {
     private MenuItem quit = new MenuItem("Quit");
     private MenuItem exit = new MenuItem("Exit");
 
-    private Menu help = new Menu("Help");
-    private MenuItem undo = new MenuItem("Undo");
-    private MenuItem redo = new MenuItem("Redo");
+    private final Menu undo = new Menu("");
+    private final Menu redo = new Menu("");
     //We use bindings to make the rectangles automatically adjust to window size changes.
     //Since the board must be square, we must use a conditional binding.
     //If the width is larger than the height, the height property divided by 8 is used as the length of each side of the square.
@@ -84,9 +83,28 @@ public class ChessBoardView extends Scene {
         boardStack = new StackPane();
 
         //Adding the menubar to the borderpane.
-        game.getItems().addAll(save,restart,quit,exit);
-        help.getItems().addAll(undo, redo);
+        game.getItems().addAll(save, restart, quit, exit);
+
+        Label dummyUndo = new Label("Undo");
+        dummyUndo.setOnMouseClicked(e -> {
+            Board old = currentGame.undo();
+            currentGame.undo();
+            if (old == null) return;
+            updateAnimateBoard(old, currentGame.getCurrentBoard());
+        });
+
+        Label dummyRedo = new Label("Redo");
+        dummyRedo.setOnMouseClicked(e -> {
+            Board old = currentGame.redo();
+            currentGame.redo();
+            if (old == null) return;
+            updateAnimateBoard(old, currentGame.getCurrentBoard());
+        });
+
+        undo.setGraphic(dummyUndo);
+        redo.setGraphic(dummyRedo);
         menuBar.getMenus().addAll(game);
+        menuBar.getMenus().addAll(undo, redo);
 
         borderPane.setTop(menuBar);
 
@@ -119,19 +137,8 @@ public class ChessBoardView extends Scene {
 
         exit.setOnAction(actionEvent -> {
             //Exit the game
+            executor.shutdownNow();
             System.exit(0);
-        });
-
-        undo.setOnAction(actionEvent -> {
-            //TODO implement undo
-            //Undo the previous move
-            currentGame.undo();
-        });
-
-        redo.setOnAction(actionEvent -> {
-            //TODO implement redo
-            //Redo the undone move, if available
-            currentGame.redo();
         });
 
         //Generating all the tiles on the tile grid.
@@ -159,6 +166,11 @@ public class ChessBoardView extends Scene {
         }
 
         //Update the board with the current board piece locations.
+        updateBoard();
+    }
+
+    private void updateBoard() {
+        pieceGrid.getChildren().clear();
         Board board = currentGame.getCurrentBoard();
         for(int column=0;column<8;column++){
             for(int row=0;row<8;row++){
@@ -182,7 +194,6 @@ public class ChessBoardView extends Scene {
                     emptySpot.heightProperty().bind(size);
                     pieceGrid.add(emptySpot, column, row);
                 }
-
             }
         }
     }
@@ -191,40 +202,45 @@ public class ChessBoardView extends Scene {
         return currentGame;
     }
 
-    public void movePieceToCell(int fromColumn, int fromRow, int toColumn, int toRow){
+    private void updateAnimateBoard(Board oldBoard, Board newBoard) {
+        for (int[] change : newBoard.getChangedPieceCoordinates(oldBoard)) {
+            if (change == null || change[0] == change[2] && change[1] == change[3]) continue;
 
-        Node to = getCell(pieceGrid, toColumn, toRow);
-        if (to instanceof ImageView) {
-            FadeTransition fadeIn = new FadeTransition(Duration.millis(200));
-            fadeIn.setNode(to);
-            fadeIn.setToValue(0);
-            fadeIn.play();
-            fadeIn.setOnFinished(e -> {
+            Node to = getCell(pieceGrid, change[2], change[3]);
+            double x = to.getLayoutX();
+            double y = to.getLayoutY();
+            if (to instanceof ImageView) { //Theres another piece in the spot we want
+                TranslateTransition translate = new TranslateTransition(Duration.millis(300));
+                translate.setInterpolator(Interpolator.EASE_OUT);
+                translate.setNode(to);
+                translate.setByX((oldBoard.getPieceAt(change[2], change[3]).isBlack() ? -1 : 1) * 1000);
+                translate.playFromStart();
+                translate.setOnFinished(e -> pieceGrid.getChildren().remove(to));
+            }
+
+            Node from = getCell(pieceGrid, change[0], change[1]);//From should never be null
+            TranslateTransition translate = new TranslateTransition(Duration.millis(300));
+            translate.setInterpolator(Interpolator.EASE_OUT);
+            translate.setNode(from);
+            translate.setToX(x - from.getLayoutX());
+            translate.setToY(y - from.getLayoutY());
+
+            translate.setOnFinished(e -> {
                 pieceGrid.getChildren().remove(to);
+                pieceGrid.getChildren().remove(from);
+                pieceGrid.layout();
+                Rectangle emptySpot = new Rectangle();
+                emptySpot.setOpacity(0);
+                emptySpot.widthProperty().bind(size);
+                emptySpot.heightProperty().bind(size);
+                pieceGrid.add(emptySpot, change[0], change[1]);
+                from.setTranslateX(0);
+                from.setTranslateY(0);
+                pieceGrid.add(from, change[2], change[3]);
             });
-        } else if (to == null) return; //Not sure what would have happened to get this case.
 
-        Node from = getCell(pieceGrid, fromColumn, fromRow);//From should never be null
-        TranslateTransition translate = new TranslateTransition(Duration.millis(750));
-        translate.setInterpolator(Interpolator.EASE_OUT);
-        translate.setNode(from);
-        translate.setToX(to.getLayoutX() - from.getLayoutX());
-        translate.setToY(to.getLayoutY() - from.getLayoutY());
-        translate.playFromStart();
-
-        translate.setOnFinished(e -> {
-            pieceGrid.getChildren().remove(to);
-            pieceGrid.getChildren().remove(from);
-            Rectangle emptySpot = new Rectangle();
-            emptySpot.setOpacity(0);
-            emptySpot.widthProperty().bind(size);
-            emptySpot.heightProperty().bind(size);
-            pieceGrid.add(emptySpot, fromColumn, fromRow);
-            from.setTranslateX(0);
-            from.setTranslateY(0);
-            pieceGrid.add(from, toColumn, toRow);
-        });
-        pieceGrid.layout();
+            translate.playFromStart();
+        }
     }
 
     //event Handlers
@@ -272,11 +288,13 @@ public class ChessBoardView extends Scene {
         }
         
         if (!(selection instanceof ImageView) || currentGame.getCurrentBoard().getPieceAt(column, row).isBlack()) {
+            if (location == null) return;
             if (isValidSpot(currentGame.getValidSpotsFrom(location[0], location[1]), column, row) && (currentGame.getCurrentBoard().isWhiteToMove())) {
-                currentGame.getCurrentBoard().movePiece(location[0], location[1], column, row);
-                movePieceToCell(location[0], location[1], column, row);
+                Board playerCopy = new Board(currentGame.getCurrentBoard());
+                currentGame.movePiece(location[0], location[1], column, row);
+                updateAnimateBoard(playerCopy, currentGame.getCurrentBoard());
                 currentGame.setSelectedLocation(null);
-                Board copy = new Board(currentGame.getCurrentBoard());
+                Board aiCopy = new Board(currentGame.getCurrentBoard());
                 Task<Board> task = new Task<>() {
                     @Override
                     protected Board call() {
@@ -284,14 +302,10 @@ public class ChessBoardView extends Scene {
                         return currentGame.getCurrentBoard();
                     }
                 };
-                task.setOnSucceeded(e -> {
-                    int[] change = currentGame.getCurrentBoard().getChangedPieceCoordinate(copy);
-                    movePieceToCell(change[0], change[1], change[2], change[3]);
-                });
-                executor.schedule(task, 760, TimeUnit.MILLISECONDS);
+                task.setOnSucceeded(e -> updateAnimateBoard(aiCopy, currentGame.getCurrentBoard()));
+                executor.schedule(task, 450, TimeUnit.MILLISECONDS);
             }
             currentGame.setSelectedLocation(null);
-
         }
         
         if (location != null && (location[0] != column || location[1] != row)) {

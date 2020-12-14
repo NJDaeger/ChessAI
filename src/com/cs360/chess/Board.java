@@ -23,29 +23,29 @@ public class Board {
 
 
         for (int i = 0; i < 8; i++) {
-            pieces[i] = new Pawn(false, i, 6);
-            pieces[i+8] = new Pawn(true, i, 1);
+            pieces[i] = new Pawn(i, false, i, 6);
+            pieces[i+8] = new Pawn(i + 8, true, i, 1);
         }
 
         //The black pieces (on top)
-        pieces[16] = new Rook(true, 0, 0);
-        pieces[17] = new Knight(true, 1, 0);
-        pieces[18] = new Bishop(true, 2, 0);
-        pieces[19] = new Queen(true, 3, 0);
-        pieces[20] = new King(true, 4, 0);
-        pieces[21] = new Bishop(true, 5, 0);
-        pieces[22] = new Knight(true, 6, 0);
-        pieces[23] = new Rook(true, 7, 0);
+        pieces[16] = new Rook(16, true, 0, 0);
+        pieces[17] = new Knight(17, true, 1, 0);
+        pieces[18] = new Bishop(18, true, 2, 0);
+        pieces[19] = new Queen(19, true, 3, 0);
+        pieces[20] = new King(20, true, 4, 0);
+        pieces[21] = new Bishop(21, true, 5, 0);
+        pieces[22] = new Knight(22, true, 6, 0);
+        pieces[23] = new Rook(23, true, 7, 0);
 
         //The white pieces (on bottom)
-        pieces[24] = new Rook(false, 0, 7);
-        pieces[25] = new Knight(false, 1, 7);
-        pieces[26] = new Bishop(false, 2, 7);
-        pieces[27] = new Queen(false, 3, 7);
-        pieces[28] = new King(false, 4, 7);
-        pieces[29] = new Bishop(false, 5, 7);
-        pieces[30] = new Knight(false, 6, 7);
-        pieces[31] = new Rook(false, 7, 7);
+        pieces[24] = new Rook(24, false, 0, 7);
+        pieces[25] = new Knight(25, false, 1, 7);
+        pieces[26] = new Bishop(26, false, 2, 7);
+        pieces[27] = new Queen(27, false, 3, 7);
+        pieces[28] = new King(28, false, 4, 7);
+        pieces[29] = new Bishop(29, false, 5, 7);
+        pieces[30] = new Knight(30, false, 6, 7);
+        pieces[31] = new Rook(31, false, 7, 7);
 
         blackKing = 20;
         whiteKing = 28;
@@ -103,7 +103,7 @@ public class Board {
                 //Handling pawn promotion here so the AI always sees it
                 if (piece instanceof Pawn && (newRow == 0 || newRow == 7)) {
                     pieces[index] = null;
-                    pieces[index] = new Queen(piece.isBlack(), true, newColumn, newRow);
+                    pieces[index] = new Queen(piece.getUniqueId(), piece.isBlack(), true, newColumn, newRow);
                     break;
                 }
 
@@ -236,11 +236,23 @@ public class Board {
         return whiteScore-blackScore;
     }
 
-    public int[] getChangedPieceCoordinate(Board oldBoard) {
-        for (int i = 0; i < oldBoard.pieces.length; i++) {
-            if (oldBoard.pieces[i] != null && pieces[i] != null && (oldBoard.pieces[i].getColumn() != pieces[i].getColumn() || oldBoard.pieces[i].getRow() != pieces[i].getRow())) return new int[]{oldBoard.pieces[i].getColumn(), oldBoard.pieces[i].getRow(), pieces[i].getColumn(), pieces[i].getRow()};
+    public int[][] getChangedPieceCoordinates(Board oldBoard) {
+        int[][] changes = new int[4][4];
+        int index = 0;
+        for (Piece oldPiece : oldBoard.pieces) {
+            if (oldPiece != null) {
+                for (Piece piece : pieces) {
+                    if (piece != null && oldPiece.getUniqueId() == piece.getUniqueId()) {
+                        if (piece.getColumn() != oldPiece.getColumn() || piece.getRow() != oldPiece.getRow()) { //The piece moved
+                            changes[index] = new int[]{oldPiece.getColumn(), oldPiece.getRow(), piece.getColumn(), piece.getRow()};
+                            index++;
+                        }
+                        break;
+                    }
+                }
+            }
         }
-        return null;
+        return changes;
     }
 
 }

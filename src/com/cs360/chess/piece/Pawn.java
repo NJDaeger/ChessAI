@@ -7,17 +7,17 @@ public final class Pawn extends Piece {
     private static final int points = 1;
     private static final int id = 0;
 
-    public Pawn(boolean isBlack, int column, int row) {
-        super(isBlack, column, row);
+    public Pawn(int id, boolean isBlack, int column, int row) {
+        super(id, isBlack, column, row);
     }
 
-    public Pawn(boolean black, boolean hasMoved, int column, int row) {
-        super(black, hasMoved, column, row);
+    public Pawn(int id, boolean black, boolean hasMoved, int column, int row) {
+        super(id, black, hasMoved, column, row);
     }
 
     @Override
     public Pawn clone() {
-        return new Pawn(isBlack(), hasMoved(), getColumn(), getRow());
+        return new Pawn(getUniqueId(), isBlack(), hasMoved(), getColumn(), getRow());
     }
 
     @Override
@@ -70,7 +70,7 @@ public final class Pawn extends Piece {
 
     @Override
     public String toString() {
-        return "Pawn[black=" + isBlack() + ",points=" + getPoints() + ",moved=" + hasMoved() + ",col=" + getColumn() + ",row=" + getRow() + ",BINARY=" + Integer.toBinaryString(data) + "]";
+        return "Pawn[uid=" + getUniqueId() + "black=" + isBlack() + ",points=" + getPoints() + ",moved=" + hasMoved() + ",col=" + getColumn() + ",row=" + getRow() + ",BINARY=" + Integer.toBinaryString(data) + "]";
     }
 
 }

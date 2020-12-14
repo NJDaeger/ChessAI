@@ -9,17 +9,17 @@ public final class King extends Piece {
     private static final int points = 1500;
     private static final int id = 4;
 
-    public King(boolean isBlack, int column, int row) {
-        super(isBlack, column, row);
+    public King(int id, boolean isBlack, int column, int row) {
+        super(id, isBlack, column, row);
     }
 
-    public King(boolean black, boolean hasMoved, int column, int row) {
-        super(black, hasMoved, column, row);
+    public King(int id, boolean black, boolean hasMoved, int column, int row) {
+        super(id, black, hasMoved, column, row);
     }
 
     @Override
     public King clone() {
-        return new King(isBlack(), hasMoved(), getColumn(), getRow());
+        return new King(getUniqueId(), isBlack(), hasMoved(), getColumn(), getRow());
     }
 
     @Override
@@ -35,7 +35,6 @@ public final class King extends Piece {
     //all directions, max of 1 space at a time
     @Override
     public int[][] computePossible(Board board) {
-//        if (board.isWhiteToMove() && board.isWhiteInCheck() || !board.isWhiteToMove() && board.isBlackInCheck()) return new int[0][0];
         int[][] moves = new int[10][2];
         int index = 0;
         /*
@@ -133,7 +132,7 @@ public final class King extends Piece {
 
     @Override
     public String toString() {
-        return "King[black=" + isBlack() + ",points=" + getPoints() + ",moved=" + hasMoved() + ",col=" + getColumn() + ",row=" + getRow() + ",BINARY=" + Integer.toBinaryString(data) + "]";
+        return "King[uid=" + getUniqueId() + "black=" + isBlack() + ",points=" + getPoints() + ",moved=" + hasMoved() + ",col=" + getColumn() + ",row=" + getRow() + ",BINARY=" + Integer.toBinaryString(data) + "]";
     }
 
 }
