@@ -2,10 +2,12 @@ package com.cs360.chess;
 
 import com.cs360.chess.piece.*;
 
+import java.io.Serializable;
+
 /**
  * The grid of pieces which can be manipulated. This can represent a primary board, or a future board depending on its context.
  */
-public class Board {
+public class Board implements Serializable {
 
     private final Piece[] pieces;
     boolean whiteToMove = true; //flag that controls who's turn it is
@@ -236,6 +238,11 @@ public class Board {
         return whiteScore-blackScore;
     }
 
+    /**
+     * Gets an array of all the changed coordinates from the current board to the given board
+     * @param oldBoard The board to compare it against
+     * @return An integer array of all the pieces changed. (Their from locations to their to locations)
+     */
     public int[][] getChangedPieceCoordinates(Board oldBoard) {
         int[][] changes = new int[4][4];
         int index = 0;
@@ -255,4 +262,21 @@ public class Board {
         return changes;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("--------\n--------\n--------\n--------\n--------\n--------\n--------\n--------\n");
+        for (Piece piece : pieces) {
+            if (piece == null) continue;
+            char character = '-';
+            if (piece instanceof Bishop) character = 'B';
+            else if (piece instanceof King) character = 'K';
+            else if (piece instanceof Knight) character = 'N';
+            else if (piece instanceof Pawn) character = 'P';
+            else if (piece instanceof Queen) character = 'Q';
+            else if (piece instanceof Rook) character = 'R';
+            builder.setCharAt(piece.getRow() * 8 + piece.getColumn() + (piece.getRow()), character);
+        }
+        return builder.toString();
+    }
 }

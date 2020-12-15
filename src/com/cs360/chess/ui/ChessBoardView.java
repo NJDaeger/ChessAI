@@ -3,6 +3,7 @@ package com.cs360.chess.ui;
 import com.cs360.chess.Board;
 import com.cs360.chess.Game;
 import com.cs360.chess.IconMap;
+import com.cs360.chess.piece.Piece;
 import de.codecentric.centerdevice.javafxsvg.SvgImageLoaderFactory;
 import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
@@ -27,8 +28,13 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.stage.FileChooser;
 import javafx.util.Duration;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -37,6 +43,8 @@ public class ChessBoardView extends Scene {
 
     private Game currentGame;
     static final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+
+    private long throttle = 0;
 
     //FX stuff
     private GridPane tileGrid;
@@ -56,7 +64,6 @@ public class ChessBoardView extends Scene {
     private MenuItem exit = new MenuItem("Exit");
 
     private final Menu undo = new Menu("");
-    private final Menu redo = new Menu("");
     //We use bindings to make the rectangles automatically adjust to window size changes.
     //Since the board must be square, we must use a conditional binding.
     //If the width is larger than the height, the height property divided by 8 is used as the length of each side of the square.
@@ -66,12 +73,16 @@ public class ChessBoardView extends Scene {
     private DoubleBinding size;
 
     public ChessBoardView(GameMenu gameMenu) {
+        this(gameMenu, new Game());
+    }
+
+    public ChessBoardView(GameMenu gameMenu, Game currentGame) {
         super(new BorderPane());
         SvgImageLoaderFactory.install(); //Required so we can load SVG images in the program.
         IconMap.loadIcons(); //Loading our icons
 
         borderPane = (BorderPane) getRoot();
-        currentGame = new Game();
+        this.currentGame = currentGame;
 
         //Tile grid holding the colored tiles of the board.
         tileGrid = new GridPane();
@@ -87,24 +98,16 @@ public class ChessBoardView extends Scene {
 
         Label dummyUndo = new Label("Undo");
         dummyUndo.setOnMouseClicked(e -> {
+            if (System.currentTimeMillis() - throttle < 1000) return;
             Board old = currentGame.undo();
+            if (old == null) return;
             currentGame.undo();
-            if (old == null) return;
-            updateAnimateBoard(old, currentGame.getCurrentBoard());
-        });
-
-        Label dummyRedo = new Label("Redo");
-        dummyRedo.setOnMouseClicked(e -> {
-            Board old = currentGame.redo();
-            currentGame.redo();
-            if (old == null) return;
-            updateAnimateBoard(old, currentGame.getCurrentBoard());
+            updateAnimateBoard(old, currentGame.getCurrentBoard(), true);
         });
 
         undo.setGraphic(dummyUndo);
-        redo.setGraphic(dummyRedo);
         menuBar.getMenus().addAll(game);
-        menuBar.getMenus().addAll(undo, redo);
+        menuBar.getMenus().addAll(undo);
 
         borderPane.setTop(menuBar);
 
@@ -123,8 +126,20 @@ public class ChessBoardView extends Scene {
 
         //Action handling for menubar options
         save.setOnAction(actionEvent -> {
-            //TODO add saving
-            //Save the current piece positions so the game can be resumed later or loaded
+            FileChooser chooseLocation = new FileChooser();
+            chooseLocation.setTitle("Save this chess game");
+            chooseLocation.setSelectedExtensionFilter(new FileChooser.ExtensionFilter("A chess game", "*.chess"));
+            File saveLocation = chooseLocation.showOpenDialog(this.getWindow());
+            try {
+                FileOutputStream fos = new FileOutputStream(saveLocation);
+                ObjectOutputStream oos = new ObjectOutputStream(fos);
+                oos.writeObject(currentGame);
+                oos.close();
+                fos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            gameMenu.getStage().setScene(gameMenu.titleBorderPane.getScene());
         });
 
         restart.setOnAction(actionEvent -> {
@@ -202,9 +217,9 @@ public class ChessBoardView extends Scene {
         return currentGame;
     }
 
-    private void updateAnimateBoard(Board oldBoard, Board newBoard) {
+    private void updateAnimateBoard(Board oldBoard, Board newBoard, boolean fillMissing) {
         for (int[] change : newBoard.getChangedPieceCoordinates(oldBoard)) {
-            if (change == null || change[0] == change[2] && change[1] == change[3]) continue;
+            if (change == null || (change[0] == change[2] && change[1] == change[3])) continue;
 
             Node to = getCell(pieceGrid, change[2], change[3]);
             double x = to.getLayoutX();
@@ -237,10 +252,42 @@ public class ChessBoardView extends Scene {
                 from.setTranslateX(0);
                 from.setTranslateY(0);
                 pieceGrid.add(from, change[2], change[3]);
+                if (from instanceof ImageView) ((ImageView) from).setImage(IconMap.getIcon(newBoard.getPieceAt(change[2], change[3])));
             });
 
             translate.playFromStart();
         }
+
+        if (fillMissing) {
+            for (Piece newPiece : newBoard.getPieces()) {
+                if (newPiece != null) {
+                    boolean existsInOld = false;
+                    for (Piece oldPiece : oldBoard.getPieces()) {
+                        if (oldPiece != null) {
+                            if (oldPiece.getUniqueId() == newPiece.getUniqueId()) {
+                                existsInOld = true;
+                                break; //The piece exists in both boards
+                            }
+                        }
+                    }
+                    if (!existsInOld) {
+                        ImageView img = new ImageView(IconMap.getIcon(newPiece));
+                        //Setting the bindings and adding the tile
+                        img.fitWidthProperty().bind(size);
+                        img.fitHeightProperty().bind(size);
+                        img.setOpacity(0);
+                        pieceGrid.add(img, newPiece.getColumn(), newPiece.getRow());
+                        FadeTransition fadeIn = new FadeTransition(Duration.millis(200));
+                        fadeIn.setNode(img);
+                        fadeIn.setFromValue(0);
+                        fadeIn.setToValue(1);
+                        fadeIn.play();
+
+                    }
+                }
+            }
+        }
+
     }
 
     //event Handlers
@@ -292,7 +339,7 @@ public class ChessBoardView extends Scene {
             if (isValidSpot(currentGame.getValidSpotsFrom(location[0], location[1]), column, row) && (currentGame.getCurrentBoard().isWhiteToMove())) {
                 Board playerCopy = new Board(currentGame.getCurrentBoard());
                 currentGame.movePiece(location[0], location[1], column, row);
-                updateAnimateBoard(playerCopy, currentGame.getCurrentBoard());
+                updateAnimateBoard(playerCopy, currentGame.getCurrentBoard(), false);
                 currentGame.setSelectedLocation(null);
                 Board aiCopy = new Board(currentGame.getCurrentBoard());
                 Task<Board> task = new Task<>() {
@@ -302,7 +349,7 @@ public class ChessBoardView extends Scene {
                         return currentGame.getCurrentBoard();
                     }
                 };
-                task.setOnSucceeded(e -> updateAnimateBoard(aiCopy, currentGame.getCurrentBoard()));
+                task.setOnSucceeded(e -> updateAnimateBoard(aiCopy, currentGame.getCurrentBoard(), false));
                 executor.schedule(task, 450, TimeUnit.MILLISECONDS);
             }
             currentGame.setSelectedLocation(null);

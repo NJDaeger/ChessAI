@@ -1,5 +1,6 @@
 package com.cs360.chess.ui;
 
+import com.cs360.chess.Game;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -8,7 +9,13 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 
 public class GameMenu extends Application {
     //Main container
@@ -42,7 +49,7 @@ public class GameMenu extends Application {
         hbox.setAlignment(Pos.CENTER);
         return hbox;
     }
-    public HBox addHBox2(){
+    /*public HBox addHBox2(){
         HBox hbox = new HBox();
         hbox.setSpacing(10);
         twoPlayerButton = new Button("Play 2 Player Game");
@@ -51,7 +58,7 @@ public class GameMenu extends Application {
         hbox.getChildren().addAll(twoPlayerButton);
         hbox.setAlignment(Pos.CENTER);
         return hbox;
-    }
+    }*/
 
     public HBox addHBox3(){
         HBox hbox = new HBox();
@@ -104,7 +111,7 @@ public class GameMenu extends Application {
     public VBox addVBox(){
         VBox vbox = new VBox();
         vbox.setSpacing(10);
-        vbox.getChildren().addAll(addHBox1(), addHBox2(), addHBox3(), addHBox4(), addHBox5());
+        vbox.getChildren().addAll(addHBox1(), /*addHBox2(),*/ addHBox3(), addHBox4(), addHBox5());
         vbox.setAlignment(Pos.CENTER);
         return vbox;
     }
@@ -133,14 +140,28 @@ public class GameMenu extends Application {
 
         stage.setOnCloseRequest(e -> ChessBoardView.executor.shutdownNow());
 
-        //Event handling for buttons, can be refactored
+        /*//Event handling for buttons, can be refactored
         twoPlayerButton.setOnAction(actionEvent -> {
             //TODO merge GUIs to allow scene selection/game starting
             //Initiate a new game and switch scenes, no AI usage
-        });
+        });*/
         loadButton.setOnAction(actionEvent -> {
-            //TODO implement loading
-            //Load a saved game and switch scenes if a valid game is chosen
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Select a game to load");
+            fileChooser.setSelectedExtensionFilter(new FileChooser.ExtensionFilter("A saved chess game", "*.chess"));
+            File selected = fileChooser.showOpenDialog(stage);
+
+            if (selected != null) {
+                try {
+                    ObjectInputStream ois = new ObjectInputStream(new FileInputStream(selected));
+                    Game game = (Game)ois.readObject();
+                    ChessBoardView chessGame = new ChessBoardView(this, game);
+                    stage.setScene(chessGame);
+                } catch (IOException | ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+
         });
         exitButton.setOnAction(actionEvent -> System.exit(0));
 

@@ -2,7 +2,9 @@ package com.cs360.chess.piece;
 
 import com.cs360.chess.Board;
 
-public abstract class Piece implements Cloneable {
+import java.io.Serializable;
+
+public abstract class Piece implements Cloneable, Serializable {
 
     /*
       Okay, so this is a very heavily packed integer in an effort to remove as many data fields as we can.
